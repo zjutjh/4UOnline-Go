@@ -1,0 +1,21 @@
+database:
+  name: 4u_db
+  host: "127.0.0.1"
+  port: 3306
+  user: root
+  pass:
+
+session:
+  name: 4u-session
+  driver: redis
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  db: 0
+  user: root
+  pass:
+
+wechat: # 微信小程序相关配置 (切记不能泄漏,不能为空）
+  appid:
+  appsecret:
