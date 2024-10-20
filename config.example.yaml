@@ -19,3 +19,7 @@ redis:
 wechat: # 微信小程序相关配置 (切记不能泄漏,不能为空）
   appid:
   appsecret:
+
+
+user:
+  host:
