@@ -8,7 +8,7 @@ import (
 )
 
 // RegWithoutVerify 不验证激活用户
-func RegWithoutVerify(stuId string, pass string, iid string, email string) error {
+func RegWithoutVerify(stuId string, pass string, iid string, email string, userType uint) error {
 	params := url.Values{}
 	userUrl, err := url.Parse(string(userCenterApi.UCRegWithoutVerify))
 	if err != nil {
@@ -16,11 +16,13 @@ func RegWithoutVerify(stuId string, pass string, iid string, email string) error
 	}
 	userUrl.RawQuery = params.Encode()
 	urlPath := userUrl.String()
-	regMap := make(map[string]string)
+	regMap := make(map[string]any)
 	regMap["stu_id"] = stuId
 	regMap["password"] = pass
 	regMap["iid"] = iid
 	regMap["email"] = email
+	regMap["type"] = userType
+	regMap["bound_system"] = 1
 	resp, err := FetchHandleOfPost(regMap, userCenterApi.UserCenterApi(urlPath))
 	if err != nil {
 		return err

@@ -16,7 +16,7 @@ type UserCenterResponse struct {
 }
 
 // FetchHandleOfPost 向用户中心发送post请求
-func FetchHandleOfPost(form map[string]string, url userCenterApi.UserCenterApi) (*UserCenterResponse, error) {
+func FetchHandleOfPost(form map[string]any, url userCenterApi.UserCenterApi) (*UserCenterResponse, error) {
 	f := fetch.Fetch{}
 	f.Init()
 	res, err := f.PostJsonForm(userCenterApi.UserCenterHost+string(url), form)
