@@ -16,6 +16,10 @@ func Init(r *gin.Engine) {
 		{
 			user.POST("/create/student/wechat", userController.BindOrCreateStudentUserFromWechat)
 			user.POST("/create/student", userController.CreateStudentUser)
+
+			user.POST("/login/wechat", userController.WeChatLogin)
+			user.POST("/login", userController.AuthByPassword)
+			user.POST("/login/session", userController.AuthBySession)
 		}
 	}
 }

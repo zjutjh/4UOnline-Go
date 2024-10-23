@@ -7,7 +7,7 @@ import (
 	"4u-go/config/api/userCenterApi"
 )
 
-// RegWithoutVerify 不验证激活用户
+// RegWithoutVerify 用户中心不验证激活用户
 func RegWithoutVerify(stuId string, pass string, iid string, email string, userType uint) error {
 	params := url.Values{}
 	userUrl, err := url.Parse(string(userCenterApi.UCRegWithoutVerify))

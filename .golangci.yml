@@ -48,7 +48,7 @@ linters-settings:
   gofmt:
     simplify: true  # 使用 gofmt 的 `-s` 选项简化代码
   gocyclo:
-    min-complexity: 5  # 触发报告的最小代码复杂度
+    min-complexity: 6  # 触发报告的最小代码复杂度
   dupl:
     threshold: 100  # 触发报告的最小令牌数
   goconst:

@@ -66,8 +66,8 @@ type createStudentUserForm struct {
 // CreateStudentUser H5创建学生用户
 func CreateStudentUser(c *gin.Context) {
 	var postForm createStudentUserForm
-	errBind := c.ShouldBindJSON(&postForm)
-	if errBind != nil {
+	err := c.ShouldBindJSON(&postForm)
+	if err != nil {
 		utils.JsonErrorResponse(c, apiException.ParamError)
 		return
 	}
