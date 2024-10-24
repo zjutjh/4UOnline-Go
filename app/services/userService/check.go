@@ -27,7 +27,7 @@ func CheckLocalLogin(user *models.User, password string) error {
 	h := sha256.New()
 	_, err := h.Write([]byte(password))
 	if err != nil {
-		return apiException.ServerError
+		return err
 	}
 	pass := hex.EncodeToString(h.Sum(nil))
 

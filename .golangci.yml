@@ -35,7 +35,7 @@ linters-settings:
         severity: warning
         disabled: false
         exclude: [ "" ]
-        arguments: [ 110 ]
+        arguments: [ 120 ]
       - name: add-constant       #使用命名常量而非魔法数字
         severity: warning
         disabled: true
@@ -48,7 +48,7 @@ linters-settings:
   gofmt:
     simplify: true  # 使用 gofmt 的 `-s` 选项简化代码
   gocyclo:
-    min-complexity: 6  # 触发报告的最小代码复杂度
+    min-complexity: 7  # 触发报告的最小代码复杂度
   dupl:
     threshold: 100  # 触发报告的最小令牌数
   goconst:

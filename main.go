@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"4u-go/app/midwares"
+	"4u-go/app/utils/log"
 	"4u-go/config/database"
 	"4u-go/config/router"
 	"4u-go/config/session"
@@ -13,24 +12,25 @@ import (
 )
 
 func main() {
-	if err := database.Init(); err != nil {
-		log.Fatal(err) // 在 main 函数中处理错误并终止程序
-	}
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(midwares.ErrHandler())
 	r.NoMethod(midwares.HandleNotFound)
 	r.NoRoute(midwares.HandleNotFound)
+	log.ZapInit()
+	if err := database.Init(); err != nil {
+		log.Logger.Fatal(err.Error()) // 在 main 函数中处理错误并终止程序
+	}
 	if err := session.Init(r); err != nil {
-		log.Fatal(err)
+		log.Logger.Fatal(err.Error())
 	}
 	if err := wechat.Init(); err != nil {
-		log.Fatal(err)
+		log.Logger.Fatal(err.Error())
 	}
 	router.Init(r)
 
 	err := r.Run()
 	if err != nil {
-		log.Fatal("ServerStartFailed", err)
+		log.Logger.Fatal(err.Error())
 	}
 }

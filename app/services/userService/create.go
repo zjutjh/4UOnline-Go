@@ -17,7 +17,7 @@ func CreateStudentUser(studentID, password, idCardNumber, email string, usertype
 	if err == nil {
 		return nil, apiException.UserAlreadyExisted
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, apiException.ServerError
+		return nil, err
 	}
 	err = userCenterService.RegWithoutVerify(studentID, password, idCardNumber, email, usertype)
 	if err != nil && !errors.Is(err, apiException.ReactiveError) {

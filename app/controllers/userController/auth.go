@@ -22,28 +22,33 @@ func AuthByPassword(c *gin.Context) {
 	var postForm passwordLoginForm
 	err := c.ShouldBindJSON(&postForm)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError)
+		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
 		return
 	}
 
 	user, err := userService.GetUserByStudentID(postForm.StudentID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		utils.JsonErrorResponse(c, apiException.UserNotFound)
+		utils.JsonErrorResponse(c, apiException.UserNotFound, utils.LevelInfo, err)
 		return
 	}
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelInfo, err)
 		return
 	}
 
 	if err := userService.AuthenticateUser(user, postForm.Password); err != nil {
-		userService.HandleError(c, err)
+		var apiErr *apiException.Error
+		if errors.As(err, &apiErr) {
+			utils.JsonErrorResponse(c, apiErr, utils.LevelInfo, err)
+		} else {
+			utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		}
 		return
 	}
 
 	err = sessionService.SetUserSession(c, user)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, gin.H{
@@ -65,7 +70,7 @@ type autoLoginForm struct {
 func AuthBySession(c *gin.Context) {
 	user, err := sessionService.UpdateUserSession(c)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, gin.H{
@@ -84,28 +89,29 @@ func WeChatLogin(c *gin.Context) {
 	var postForm autoLoginForm
 	err := c.ShouldBindJSON(&postForm)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError)
+		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
 		return
 	}
 
 	session, err := wechat.MiniProgram.GetAuth().Code2Session(postForm.Code)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.OpenIDError)
+		utils.JsonErrorResponse(c, apiException.OpenIDError, utils.LevelError, err)
 		return
 	}
 
 	user, err := userService.GetUserByWechatOpenID(session.OpenID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		utils.JsonErrorResponse(c, apiException.UserNotFound)
+		utils.JsonErrorResponse(c, apiException.UserNotFound, utils.LevelInfo, err)
 		return
 	} else if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
 		return
 	}
 
 	err = sessionService.SetUserSession(c, user)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+
 		return
 	}
 	utils.JsonSuccessResponse(c, gin.H{

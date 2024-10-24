@@ -1,6 +1,7 @@
 package userController
 
 import (
+	"errors"
 	"strings"
 
 	"4u-go/app/apiException"
@@ -25,12 +26,12 @@ func BindOrCreateStudentUserFromWechat(c *gin.Context) {
 	var postForm createStudentUserWechatForm
 	err := c.ShouldBindJSON(&postForm)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError)
+		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
 		return
 	}
 	session, err := wechat.MiniProgram.GetAuth().Code2Session(postForm.Code)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.OpenIDError)
+		utils.JsonErrorResponse(c, apiException.OpenIDError, utils.LevelInfo, err)
 		return
 	}
 	postForm.StudentID = strings.ToUpper(postForm.StudentID)
@@ -43,13 +44,18 @@ func BindOrCreateStudentUserFromWechat(c *gin.Context) {
 		postForm.Email,
 		session.OpenID)
 	if err != nil {
-		userService.HandleError(c, err)
+		var apiErr *apiException.Error
+		if errors.As(err, &apiErr) {
+			utils.JsonErrorResponse(c, apiErr, utils.LevelInfo, err)
+		} else {
+			utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelInfo, err)
+		}
 		return
 	}
 
 	err = sessionService.SetUserSession(c, user)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelInfo, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, nil)
@@ -68,7 +74,7 @@ func CreateStudentUser(c *gin.Context) {
 	var postForm createStudentUserForm
 	err := c.ShouldBindJSON(&postForm)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError)
+		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
 		return
 	}
 	postForm.StudentID = strings.ToUpper(postForm.StudentID)
@@ -80,13 +86,18 @@ func CreateStudentUser(c *gin.Context) {
 		postForm.Email,
 		postForm.Type)
 	if err != nil {
-		userService.HandleError(c, err)
+		var apiErr *apiException.Error
+		if errors.As(err, &apiErr) {
+			utils.JsonErrorResponse(c, apiErr, utils.LevelInfo, err)
+		} else {
+			utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		}
 		return
 	}
 
 	err = sessionService.SetUserSession(c, user)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError)
+		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, nil)
