@@ -6,12 +6,12 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"time"
 
 	"4u-go/config/config"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Logger 是应用程序的全局日志记录器
@@ -33,8 +33,9 @@ type Config struct {
 	Name              string // 日志名称
 	Writers           string // 日志输出方式
 	LoggerDir         string // 日志文件目录
-	LogRollingPolicy  string // 日志滚动策略
-	LogBackupCount    uint   // 日志备份数量
+	LogMaxSize        int    // 日志文件最大大小（单位：MB）
+	LogMaxAge         int    // 日志文件最大保存天数
+	LogCompress       bool   // 是否压缩日志
 }
 
 // loggerLevelMap 映射日志级别字符串到 zapcore.Level
@@ -71,16 +72,17 @@ const (
 // loadConfig 加载日志配置
 func loadConfig() *Config {
 	return &Config{
-		Development:       config.Config.GetBool("log.development"),        // 是否是开发环境
-		DisableCaller:     config.Config.GetBool("log.disableCaller"),      // 是否禁用调用方
-		DisableStacktrace: config.Config.GetBool("log.disableStacktrace"),  // 是否禁用堆栈跟踪
-		Encoding:          config.Config.GetString("log.encoding"),         // 编码格式
-		Level:             config.Config.GetString("log.level"),            // 日志级别
-		Name:              config.Config.GetString("log.name"),             // 日志名称
-		Writers:           config.Config.GetString("log.writers"),          // 日志输出方式
-		LoggerDir:         config.Config.GetString("log.loggerDir"),        // 日志目录
-		LogRollingPolicy:  config.Config.GetString("log.logRollingPolicy"), // 日志滚动策略
-		LogBackupCount:    config.Config.GetUint("log.logBackupCount"),     // 日志备份数量
+		Development:       config.Config.GetBool("log.development"),       // 是否是开发环境
+		DisableCaller:     config.Config.GetBool("log.disableCaller"),     // 是否禁用调用方
+		DisableStacktrace: config.Config.GetBool("log.disableStacktrace"), // 是否禁用堆栈跟踪
+		Encoding:          config.Config.GetString("log.encoding"),        // 编码格式
+		Level:             config.Config.GetString("log.level"),           // 日志级别
+		Name:              config.Config.GetString("log.name"),            // 日志名称
+		Writers:           config.Config.GetString("log.writers"),         // 日志输出方式
+		LoggerDir:         config.Config.GetString("log.loggerDir"),       // 日志目录
+		LogCompress:       config.Config.GetBool("log.logCompress"),       // 是否压缩日志
+		LogMaxSize:        config.Config.GetInt("log.logMaxSize"),         // 日志文件最大大小（单位：MB）
+		LogMaxAge:         config.Config.GetInt("log.logMaxAge"),          // 日志保存天数
 	}
 }
 
@@ -127,7 +129,7 @@ func getLoggerLevel(cfg *Config) zapcore.Level {
 
 // getAllCore 返回一个记录所有级别日志的核心
 func getAllCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
-	allWriter := getLogWriterWithTime(cfg, GetLogFile(cfg.Name, LogSuffix))
+	allWriter := getLogWriter(cfg, GetLogFilepath(cfg.Name, LogSuffix))
 	allLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl <= zapcore.FatalLevel // 记录所有级别到 Fatal
 	})
@@ -136,7 +138,7 @@ func getAllCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
 
 // getInfoCore 返回一个记录信息级别日志的核心
 func getInfoCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
-	infoWrite := getLogWriterWithTime(cfg, GetLogFile(cfg.Name, LogSuffix))
+	infoWrite := getLogWriter(cfg, GetLogFilepath(cfg.Name, LogSuffix))
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl <= zapcore.InfoLevel // 记录信息及以上级别日志
 	})
@@ -144,7 +146,7 @@ func getInfoCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
 }
 
 func getLogCore(encoder zapcore.Encoder, cfg *Config, suffix string, level zapcore.Level) (zapcore.Core, zap.Option) {
-	logWrite := getLogWriterWithTime(cfg, GetLogFile(cfg.Name, suffix))
+	logWrite := getLogWriter(cfg, GetLogFilepath(cfg.Name, suffix))
 	var stacktrace zap.Option
 	logLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		if !cfg.DisableCaller {
@@ -161,51 +163,18 @@ func getLogCore(encoder zapcore.Encoder, cfg *Config, suffix string, level zapco
 	return zapcore.NewCore(encoder, zapcore.AddSync(logWrite), logLevel), stacktrace
 }
 
-// getLogWriterWithTime 返回一个带时间的日志写入器
-func getLogWriterWithTime(cfg *Config, filename string) io.Writer {
-	logFullPath := filename
-	rotationPolicy := cfg.LogRollingPolicy
-	backupCount := cfg.LogBackupCount
-
-	var (
-		rotateDuration time.Duration
-		timeFormat     string
-	)
-	// 根据滚动策略设置时间格式
-	if rotationPolicy == RotateTimeHourly {
-		rotateDuration = time.Hour
-		timeFormat = ".%Y%m%d%H"
-	} else if rotationPolicy == RotateTimeDaily {
-		rotateDuration = time.Hour * 24
-		timeFormat = ".%Y%m%d"
+// getLogWriter 返回一个日志写入器
+func getLogWriter(cfg *Config, filename string) io.Writer {
+	return &lumberjack.Logger{
+		Filename: filename,
+		MaxSize:  cfg.LogMaxSize,  // 最大日志文件大小（单位：MB），可以根据需求配置
+		MaxAge:   cfg.LogMaxAge,   // 文件保存的最大天数
+		Compress: cfg.LogCompress, // 是否压缩日志
 	}
-
-	// 检查日志文件是否存在
-	if _, err := os.Stat(logFullPath); os.IsNotExist(err) {
-		// 如果日志文件不存在，创建它
-		if err := createLogFile(logFullPath); err != nil {
-			zap.S().Error("Failed to create log file:", err)
-			panic(err)
-		}
-	}
-
-	// 创建轮转日志写入器
-	hook, err := rotatelogs.New(
-		logFullPath+time.Now().Format(timeFormat),
-		rotatelogs.WithLinkName(logFullPath),
-		rotatelogs.WithRotationCount(backupCount),
-		rotatelogs.WithRotationTime(rotateDuration),
-	)
-
-	if err != nil {
-		zap.S().Error("Failed to initialize log rotation:", err)
-		panic(err)
-	}
-	return hook
 }
 
-// GetLogFile 生成日志文件的完整路径
-func GetLogFile(filename string, suffix string) string {
+// GetLogFilepath 生成日志文件的完整路径
+func GetLogFilepath(filename string, suffix string) string {
 	return ConcatString(config.Config.GetString("log.loggerDir"), "/", filename, suffix)
 }
 
@@ -223,22 +192,6 @@ func ConcatString(s ...string) string {
 		}
 	}
 	return buffer.String()
-}
-
-// createLogFile 创建日志文件并设置权限
-func createLogFile(logFullPath string) error {
-	file, err := os.Create(logFullPath) //nolint:gosec
-	if err != nil {
-		return err // 返回错误，而不是 panic
-	}
-	defer func() {
-		if closeErr := file.Close(); closeErr != nil {
-			zap.S().Error("Failed to close log file:", closeErr)
-		}
-	}()
-
-	// 设置日志文件权限为 0600
-	return os.Chmod(logFullPath, 0600)
 }
 
 // createLogDirectory 创建日志目录
