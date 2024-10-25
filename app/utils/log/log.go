@@ -12,9 +12,6 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// Logger 是应用程序的全局日志记录器
-var Logger *zap.Logger
-
 // Dir 存储日志文件目录
 var Dir string
 
@@ -98,8 +95,10 @@ func ZapInit() {
 	// 添加其他选项
 	addAdditionalOptions(cfg, &options)
 
-	Logger = zap.New(combinedCore, options...) // 创建新的 zap 日志记录器
-	Logger.Info("Logger initialized")          // 初始化日志记录器信息
+	logger := zap.New(combinedCore, options...) // 创建新的 zap 日志记录器
+	zap.ReplaceGlobals(logger)                  // 替换全局日志记录器
+
+	zap.L().Info("Logger initialized") // 初始化日志记录器信息
 }
 
 // getLoggerLevel 返回日志级别

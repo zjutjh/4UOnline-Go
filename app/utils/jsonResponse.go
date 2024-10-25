@@ -5,7 +5,7 @@ import (
 	"runtime"
 
 	"4u-go/app/apiException"
-	"4u-go/app/utils/log"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -60,12 +60,20 @@ func logError(c *gin.Context, apiErr *apiException.Error, level Level, err error
 	}
 	// 记录日志
 	switch level {
+	case LevelFatal:
+		zap.L().Fatal(apiErr.Msg, logFields...)
+	case LevelPanic:
+		zap.L().Panic(apiErr.Msg, logFields...)
+	case LevelDpanic:
+		zap.L().DPanic(apiErr.Msg, logFields...)
 	case LevelError:
-		log.Logger.Error(apiErr.Msg, logFields...)
+		zap.L().Error(apiErr.Msg, logFields...)
 	case LevelWarn:
-		log.Logger.Warn(apiErr.Msg, logFields...)
+		zap.L().Warn(apiErr.Msg, logFields...)
 	case LevelInfo:
-		log.Logger.Info(apiErr.Msg, logFields...)
+		zap.L().Info(apiErr.Msg, logFields...)
+	case LevelDebug:
+		zap.L().Debug(apiErr.Msg, logFields...)
 	}
 }
 

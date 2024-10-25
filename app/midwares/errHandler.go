@@ -6,7 +6,7 @@ import (
 
 	"4u-go/app/apiException"
 	"4u-go/app/utils"
-	"4u-go/app/utils/log"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -22,7 +22,7 @@ func ErrHandler() gin.HandlerFunc {
 				stackTrace := make([]byte, 4096)
 				stackSize := runtime.Stack(stackTrace, true)
 				// After
-				log.Logger.Panic("Panic recovered",
+				zap.L().Panic("Panic recovered",
 					zap.Any("error", err),
 					zap.ByteString("stackTrace", stackTrace[:stackSize]))
 
@@ -40,7 +40,7 @@ func ErrHandler() gin.HandlerFunc {
 func HandleNotFound(c *gin.Context) {
 	err := apiException.NotFound
 	// 记录 404 错误日志
-	log.Logger.Warn("404 Not Found",
+	zap.L().Warn("404 Not Found",
 		zap.String("path", c.Request.URL.Path),
 		zap.String("method", c.Request.Method),
 	)
