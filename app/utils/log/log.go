@@ -80,7 +80,7 @@ func ZapInit() {
 	}
 
 	// 创建日志目录
-	if err := createLogDirectory(cfg.LoggerDir); err != nil {
+	if err := createLogDirectory(Dir); err != nil {
 		return
 	}
 
@@ -132,7 +132,7 @@ func getLogWriter(cfg *Config, filename string) io.Writer {
 
 // GetLogFilepath 生成日志文件的完整路径
 func GetLogFilepath(filename string, suffix string) string {
-	return config.Config.GetString("log.loggerDir") + "/" + filename + suffix
+	return Dir + "/" + filename + suffix
 }
 
 // createLogDirectory 创建日志目录
