@@ -4,7 +4,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"sync"
 
 	"4u-go/config/config"
 
@@ -15,9 +14,6 @@ import (
 
 // Logger 是应用程序的全局日志记录器
 var Logger *zap.Logger
-
-// zapStacktraceMutex 用于保护堆栈跟踪的并发访问
-var zapStacktraceMutex sync.Mutex
 
 // Dir 存储日志文件目录
 var Dir string
@@ -55,10 +51,6 @@ const (
 	WriterFile = "file"
 	// LogSuffix 普通日志后缀
 	LogSuffix = ".log"
-	// WarnLogSuffix 警告日志后缀
-	WarnLogSuffix = "_warn.log"
-	// ErrorLogSuffix 错误日志后缀
-	ErrorLogSuffix = "_error.log"
 )
 
 // loadConfig 加载日志配置
@@ -84,7 +76,7 @@ func ZapInit() {
 
 	Dir = cfg.LoggerDir
 	if strings.HasSuffix(Dir, "/") {
-		Dir = strings.TrimRight(Dir, "/")
+		Dir = strings.TrimRight(Dir, "/") // 去除尾部斜杠
 	}
 
 	// 创建日志目录
@@ -98,7 +90,7 @@ func ZapInit() {
 	options := []zap.Option{zap.Fields(zap.String("serviceName", cfg.Name))}
 
 	// 根据配置选择输出方式
-	cores = append(cores, createLogCores(cfg, encoder, options)...)
+	cores = append(cores, createLogCores(cfg, encoder)...)
 
 	// 合并所有核心
 	combinedCore := zapcore.NewTee(cores...)
@@ -119,40 +111,13 @@ func getLoggerLevel(cfg *Config) zapcore.Level {
 	return level
 }
 
-// getAllCore 返回一个记录所有级别日志的核心
-func getAllCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
+// getFileCore 返回一个把所有级别日志输出到文件的核心
+func getFileCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
 	allWriter := getLogWriter(cfg, GetLogFilepath(cfg.Name, LogSuffix))
 	allLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl <= zapcore.FatalLevel // 记录所有级别到 Fatal
 	})
 	return zapcore.NewCore(encoder, zapcore.AddSync(allWriter), allLevel)
-}
-
-// getInfoCore 返回一个记录信息级别日志的核心
-func getInfoCore(encoder zapcore.Encoder, cfg *Config) zapcore.Core {
-	infoWrite := getLogWriter(cfg, GetLogFilepath(cfg.Name, LogSuffix))
-	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl <= zapcore.InfoLevel // 记录信息及以上级别日志
-	})
-	return zapcore.NewCore(encoder, zapcore.AddSync(infoWrite), infoLevel)
-}
-
-func getLogCore(encoder zapcore.Encoder, cfg *Config, suffix string, level zapcore.Level) (zapcore.Core, zap.Option) {
-	logWrite := getLogWriter(cfg, GetLogFilepath(cfg.Name, suffix))
-	var stacktrace zap.Option
-	logLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		if !cfg.DisableCaller {
-			zapStacktraceMutex.Lock()
-			stacktrace = zap.AddStacktrace(level) // 记录堆栈跟踪
-			zapStacktraceMutex.Unlock()
-		}
-		// 根据传入的日志级别决定记录条件
-		if level == zapcore.WarnLevel {
-			return lvl == zapcore.WarnLevel // 仅记录警告级别日志
-		}
-		return lvl >= level // 记录错误及以上级别日志
-	})
-	return zapcore.NewCore(encoder, zapcore.AddSync(logWrite), logLevel), stacktrace
 }
 
 // getLogWriter 返回一个日志写入器
@@ -212,51 +177,16 @@ func addAdditionalOptions(cfg *Config, options *[]zap.Option) {
 }
 
 // createLogCores 创建日志核心
-func createLogCores(cfg *Config, encoder zapcore.Encoder, options []zap.Option) []zapcore.Core {
+func createLogCores(cfg *Config, encoder zapcore.Encoder) []zapcore.Core {
 	var cores []zapcore.Core
 	writers := strings.Split(cfg.Writers, ",")
 
 	for _, writer := range writers {
-		cores = append(cores, createCoreForWriter(writer, encoder, cfg, options)...)
-	}
-	return cores
-}
-
-// createCoreForWriter 根据不同的 writer 类型创建相应的日志核心
-func createCoreForWriter(writer string, encoder zapcore.Encoder, cfg *Config, options []zap.Option) []zapcore.Core {
-	switch writer {
-	case WriterConsole:
-		return []zapcore.Core{
-			zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), getLoggerLevel(cfg)),
-		}
-	case WriterFile:
-		return createFileCores(encoder, cfg, options)
-	default:
-		return []zapcore.Core{
-			zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), getLoggerLevel(cfg)),
-			getAllCore(encoder, cfg),
-		}
-	}
-}
-
-// createFileCores 创建文件相关的日志核心
-func createFileCores(encoder zapcore.Encoder, cfg *Config, options []zap.Option) []zapcore.Core {
-	var cores []zapcore.Core
-	cores = append(cores, getInfoCore(encoder, cfg))
-
-	// 获取警告日志核心
-	if warnCore, warnOption := getLogCore(encoder, cfg, WarnLogSuffix, zapcore.WarnLevel); warnCore != nil {
-		cores = append(cores, warnCore)
-		if warnOption != nil {
-			options = append(options, warnOption) //nolint:revive
-		}
-	}
-
-	// 获取错误日志核心
-	if errorCore, errorOption := getLogCore(encoder, cfg, ErrorLogSuffix, zapcore.ErrorLevel); errorCore != nil {
-		cores = append(cores, errorCore)
-		if errorOption != nil {
-			options = append(options, errorOption) //nolint:revive
+		switch writer {
+		case WriterConsole:
+			cores = append(cores, zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), getLoggerLevel(cfg)))
+		case WriterFile:
+			cores = append(cores, getFileCore(encoder, cfg))
 		}
 	}
 	return cores
