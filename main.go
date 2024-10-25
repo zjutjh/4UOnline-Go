@@ -9,6 +9,7 @@ import (
 	"4u-go/config/wechat"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -19,18 +20,18 @@ func main() {
 	r.NoRoute(midwares.HandleNotFound)
 	log.ZapInit()
 	if err := database.Init(); err != nil {
-		log.Logger.Fatal(err.Error()) // 在 main 函数中处理错误并终止程序
+		zap.L().Fatal(err.Error()) // 在 main 函数中处理错误并终止程序
 	}
 	if err := session.Init(r); err != nil {
-		log.Logger.Fatal(err.Error())
+		zap.L().Fatal(err.Error())
 	}
 	if err := wechat.Init(); err != nil {
-		log.Logger.Fatal(err.Error())
+		zap.L().Fatal(err.Error())
 	}
 	router.Init(r)
 
 	err := r.Run()
 	if err != nil {
-		log.Logger.Fatal(err.Error())
+		zap.L().Fatal(err.Error())
 	}
 }

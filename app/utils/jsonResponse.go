@@ -5,7 +5,6 @@ import (
 	"runtime"
 
 	"4u-go/app/apiException"
-	"4u-go/app/utils/log"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -58,14 +57,20 @@ func logError(c *gin.Context, apiErr *apiException.Error, level Level, err error
 		zap.Int("line", line),        // 记录代码行号
 		zap.Error(err),               // 记录原始错误信息
 	}
-	// 记录日志
-	switch level {
-	case LevelError:
-		log.Logger.Error(apiErr.Msg, logFields...)
-	case LevelWarn:
-		log.Logger.Warn(apiErr.Msg, logFields...)
-	case LevelInfo:
-		log.Logger.Info(apiErr.Msg, logFields...)
+	// 创建日志级别映射表
+	logMap := map[Level]func(string, ...zap.Field){
+		LevelFatal:  zap.L().Fatal,
+		LevelPanic:  zap.L().Panic,
+		LevelDpanic: zap.L().DPanic,
+		LevelError:  zap.L().Error,
+		LevelWarn:   zap.L().Warn,
+		LevelInfo:   zap.L().Info,
+		LevelDebug:  zap.L().Debug,
+	}
+
+	// 根据日志级别记录日志
+	if logFunc, ok := logMap[level]; ok {
+		logFunc(apiErr.Msg, logFields...)
 	}
 }
 
