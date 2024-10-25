@@ -1,7 +1,6 @@
 package log
 
 import (
-	"bytes"
 	"io"
 	"os"
 	"strings"
@@ -60,13 +59,6 @@ const (
 	WarnLogSuffix = "_warn.log"
 	// ErrorLogSuffix 错误日志后缀
 	ErrorLogSuffix = "_error.log"
-)
-
-const (
-	// RotateTimeDaily 每日滚动
-	RotateTimeDaily = "daily"
-	// RotateTimeHourly 每小时滚动
-	RotateTimeHourly = "hourly"
 )
 
 // loadConfig 加载日志配置
@@ -175,23 +167,7 @@ func getLogWriter(cfg *Config, filename string) io.Writer {
 
 // GetLogFilepath 生成日志文件的完整路径
 func GetLogFilepath(filename string, suffix string) string {
-	return ConcatString(config.Config.GetString("log.loggerDir"), "/", filename, suffix)
-}
-
-// ConcatString 将多个字符串连接成一个字符串
-func ConcatString(s ...string) string {
-	if len(s) == 0 {
-		return ""
-	}
-	var buffer bytes.Buffer
-	for _, i := range s {
-		// 检查 WriteString 返回的错误，尽管不太可能返回错误
-		if _, err := buffer.WriteString(i); err != nil {
-			// 这里可以选择记录错误或者其他处理，取决于您的需求
-			zap.S().Error("Failed to write string to buffer:", err)
-		}
-	}
-	return buffer.String()
+	return config.Config.GetString("log.loggerDir") + "/" + filename + suffix
 }
 
 // createLogDirectory 创建日志目录
