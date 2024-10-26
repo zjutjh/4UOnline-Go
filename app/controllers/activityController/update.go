@@ -1,6 +1,7 @@
 package activityController
 
 import (
+	"errors"
 	"strings"
 	"time"
 
@@ -45,7 +46,7 @@ func UpdateActivity(c *gin.Context) {
 	}
 
 	activity, err := activityService.GetActivityById(data.ID)
-	if err == gorm.ErrRecordNotFound {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		utils.JsonErrorResponse(c, apiException.ActivityNotFound, utils.LevelInfo, err)
 		return
 	}

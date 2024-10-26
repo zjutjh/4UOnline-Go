@@ -48,6 +48,10 @@ linters-settings:
       - name: get-return            #使用get必须有返回值
         severity: warning
         disabled: true
+      - name: cognitive-complexity
+        severity: warning
+        disabled: false
+        arguments: [ 10 ]
   gofmt:
     simplify: true  # 使用 gofmt 的 `-s` 选项简化代码
   gocyclo:

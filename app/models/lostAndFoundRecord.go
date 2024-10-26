@@ -4,7 +4,7 @@ import "time"
 
 // LostAndFoundRecord 失物招领记录的结构体
 type LostAndFoundRecord struct {
-	ID               int       `json:"id"`
+	ID               uint      `json:"id"`
 	Type             bool      `json:"type"`                                // 1-失物 0-寻物
 	ItemName         string    `json:"item_name"`                           // 物品名称
 	Introduction     string    `json:"introduction"`                        // 物品介绍
