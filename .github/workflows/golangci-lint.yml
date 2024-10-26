@@ -16,17 +16,17 @@ jobs:
     steps:
       # 第一步：检查出代码
       - name: Checkout code
-        uses: actions/checkout@v2  # 使用 GitHub 提供的 checkout 动作，确保代码在工作流环境中可用
+        uses: actions/checkout@v4  # 使用 GitHub 提供的 checkout 动作，确保代码在工作流环境中可用
 
       # 第二步：设置 Go 环境
       - name: Set up Go
         uses: actions/setup-go@v5  # 使用 GitHub 提供的 setup-go 动作，设置 Go 环境
         with:
-          go-version: '1.21'  # 指定 Go 版本为 1.21
+          go-version: stable
 
       # 第三步：运行 golangci-lint
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v2  # 使用 golangci-lint-action
+        uses: golangci/golangci-lint-action@v6  # 使用 golangci-lint-action
         with:
           version: v1.61.0  # 指定 golangci-lint 版本
           args: '--config .golangci.yml'  # 使用指定的配置文件
