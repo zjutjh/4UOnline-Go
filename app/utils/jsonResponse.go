@@ -2,7 +2,6 @@ package utils
 
 import (
 	"net/http"
-	"runtime"
 
 	"4u-go/app/apiException"
 	"github.com/gin-gonic/gin"
@@ -45,17 +44,13 @@ func JsonErrorResponse(c *gin.Context, apiErr *apiException.Error, level Level, 
 
 // logError 记录错误日志
 func logError(c *gin.Context, apiErr *apiException.Error, level Level, err error) {
-	// 获取抛出错误的函数和代码行数
-	funcName, file, line := getErrorCallerInfo()
 	// 构建日志字段
 	logFields := []zap.Field{
 		zap.Int("error_code", apiErr.Code),
 		zap.String("path", c.Request.URL.Path),
 		zap.String("method", c.Request.Method),
-		zap.String("func", funcName), // 记录抛出错误的函数名
-		zap.String("file", file),     // 记录文件名
-		zap.Int("line", line),        // 记录代码行号
-		zap.Error(err),               // 记录原始错误信息
+		zap.String("ip", c.ClientIP()),
+		zap.Error(err), // 记录原始错误信息
 	}
 	// 创建日志级别映射表
 	logMap := map[Level]func(string, ...zap.Field){
@@ -72,17 +67,4 @@ func logError(c *gin.Context, apiErr *apiException.Error, level Level, err error
 	if logFunc, ok := logMap[level]; ok {
 		logFunc(apiErr.Msg, logFields...)
 	}
-}
-
-// getErrorCallerInfo 获取抛出错误的函数名、文件名和行号
-func getErrorCallerInfo() (funcName, file string, line int) {
-	// 获取调用栈信息，skip 3 层：runtime.Callers, getErrorCallerInfo, logError
-	pc, file, line, ok := runtime.Caller(3)
-	if !ok {
-		return "unknown", "unknown", 0
-	}
-
-	fn := runtime.FuncForPC(pc)
-	funcName = fn.Name() // 获取函数名
-	return funcName, file, line
 }

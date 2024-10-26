@@ -26,8 +26,8 @@ user:
 
 log:
   development: true       # 是否开启开发模式  true: 开启 false: 关闭
-  disableCaller: true     # 是否禁用调用方
-  disableStacktrace: true # 是否禁用堆栈跟踪
+  disableCaller: false     # 是否禁用调用方
+  disableStacktrace: false # 是否禁用堆栈跟踪
   encoding: "json"        # 编码格式 json: json格式 console: 控制台格式
   level: "info"           # 日志级别 debug: 调试 info: 信息 warn: 警告 error: 错误 dpanic: 严重 panic: 恐慌 fatal: 致命
   name: "4u"              # 日志名称

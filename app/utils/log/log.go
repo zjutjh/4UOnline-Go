@@ -155,7 +155,7 @@ func createEncoder(cfg *Config) zapcore.Encoder {
 	encoderCfg.TimeKey = "timestamp"                   // 原来的 "T"
 	encoderCfg.CallerKey = "caller"                    // 原来的 "C"
 	encoderCfg.MessageKey = "message"                  // 原来的 "M"
-	encoderCfg.StacktraceKey = "stacktrace"            // 原来的堆栈跟踪
+	encoderCfg.StacktraceKey = "stacktrace"            // 原来的 "S"
 	encoderCfg.EncodeTime = zapcore.RFC3339TimeEncoder // 设置时间编码格式
 
 	if cfg.Encoding == WriterConsole {
@@ -167,7 +167,8 @@ func createEncoder(cfg *Config) zapcore.Encoder {
 // addAdditionalOptions 添加额外的选项
 func addAdditionalOptions(cfg *Config, options *[]zap.Option) {
 	if !cfg.DisableCaller {
-		*options = append(*options, zap.AddCaller()) // 添加调用方信息
+		*options = append(*options, zap.AddCallerSkip(2)) // 添加调用方要求
+		*options = append(*options, zap.AddCaller())      // 添加调用方信息
 	}
 	if !cfg.DisableStacktrace {
 		*options = append(*options, zap.AddStacktrace(zapcore.ErrorLevel)) // 添加堆栈跟踪
