@@ -20,5 +20,7 @@ func CheckAdmin(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	c.Set("admin_type", user.Type)
+	c.Set("user_id", user.ID)
 	c.Next()
 }

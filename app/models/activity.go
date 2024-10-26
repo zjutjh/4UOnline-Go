@@ -14,4 +14,5 @@ type Activity struct {
 	Campus       uint8     // 校区 1-朝晖 2-屏峰 3-莫干山
 	Location     string    // 活动地点
 	PublishTime  time.Time // 活动发布时间
+	AuthorID     uint      // 活动发布者ID
 }

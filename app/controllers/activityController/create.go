@@ -52,6 +52,7 @@ func CreateActivity(c *gin.Context) {
 		Campus:       data.Campus,
 		Location:     data.Location,
 		Imgs:         strings.Join(data.Photo, ","),
+		AuthorID:     c.GetUint("user_id"),
 	})
 	if err != nil {
 		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)

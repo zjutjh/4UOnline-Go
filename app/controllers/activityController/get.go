@@ -6,6 +6,7 @@ import (
 
 	"4u-go/app/apiException"
 	"4u-go/app/services/activityService"
+	"4u-go/app/services/sessionService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -29,6 +30,7 @@ type activityElement struct {
 	Campus       uint8    `json:"campus"`
 	Location     string   `json:"location"`
 	Photo        []string `json:"photo"`
+	Editable     bool     `json:"editable"`
 }
 
 // GetActivityList 获取校园活动列表
@@ -37,6 +39,12 @@ func GetActivityList(c *gin.Context) {
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		return
+	}
+
+	user, err := sessionService.GetUserSession(c)
+	if err != nil {
+		utils.JsonErrorResponse(c, apiException.NotLogin, utils.LevelInfo, err)
 		return
 	}
 
@@ -59,6 +67,7 @@ func GetActivityList(c *gin.Context) {
 			Campus:       activity.Campus,
 			Location:     activity.Location,
 			Photo:        strings.Split(activity.Imgs, ","),
+			Editable:     activity.AuthorID == user.ID || user.Type == 4,
 		})
 	}
 

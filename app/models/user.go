@@ -4,7 +4,7 @@ import "time"
 
 // User 用户结构体
 type User struct {
-	ID           int       `json:"id"`             // 用户编号
+	ID           uint      `json:"id"`             // 用户编号
 	Name         string    `json:"name"`           // 姓名
 	StudentID    string    `json:"student_id"`     // 学号
 	Type         UserType  `json:"type"`           // 用户类型

@@ -37,7 +37,7 @@ func GetUserSession(c *gin.Context) (*models.User, error) {
 	if id == nil {
 		return nil, errors.New("")
 	}
-	user, err := userService.GetUserByID(id.(int))
+	user, err := userService.GetUserByID(id.(uint))
 	if err != nil {
 		if err := ClearUserSession(c); err != nil {
 			return nil, err
