@@ -45,6 +45,9 @@ linters-settings:
       - name: import-alias-naming   #导入别名命名规则
         severity: warning
         disabled: true
+      - name: get-return            #使用get必须有返回值
+        severity: warning
+        disabled: true
   gofmt:
     simplify: true  # 使用 gofmt 的 `-s` 选项简化代码
   gocyclo:
