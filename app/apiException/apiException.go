@@ -21,6 +21,9 @@ var (
 	PwdError              = NewError(http.StatusInternalServerError, 200506, "密码长度必须在6~20位之间")
 	UserNotFound          = NewError(http.StatusInternalServerError, 200507, "该用户不存在")
 	NoThatPasswordOrWrong = NewError(http.StatusInternalServerError, 200508, "密码错误")
+	NotLogin              = NewError(http.StatusInternalServerError, 200509, "未登录")
+	NotPermission         = NewError(http.StatusInternalServerError, 200510, "该用户无权限")
+	ActivityNotFound      = NewError(http.StatusInternalServerError, 200511, "活动不存在")
 
 	NotInit  = NewError(http.StatusNotFound, 200404, http.StatusText(http.StatusNotFound))
 	NotFound = NewError(http.StatusNotFound, 200404, http.StatusText(http.StatusNotFound))
