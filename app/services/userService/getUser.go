@@ -38,7 +38,7 @@ func GetUserByStudentID(sid string) (*models.User, error) {
 }
 
 // GetUserByID 根据用户ID获取用户
-func GetUserByID(id int) (*models.User, error) {
+func GetUserByID(id uint) (*models.User, error) {
 	user := models.User{}
 	result := database.DB.Where(
 		&models.User{

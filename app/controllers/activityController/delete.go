@@ -22,13 +22,20 @@ func DeleteActivity(c *gin.Context) {
 	}
 
 	// 判断活动是否存在
-	_, err = activityService.GetActivityById(data.ID)
+	activity, err := activityService.GetActivityById(data.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, apiException.ActivityNotFound, utils.LevelInfo, err)
 		} else {
 			utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
 		}
+		return
+	}
+
+	user := c.GetUint("user_id")
+	adminType := c.GetUint("admin_type")
+	if activity.AuthorID != user && adminType != 4 {
+		utils.JsonErrorResponse(c, apiException.NotPermission, utils.LevelInfo, nil)
 		return
 	}
 
