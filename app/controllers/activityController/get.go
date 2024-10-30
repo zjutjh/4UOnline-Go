@@ -38,19 +38,19 @@ func GetActivityList(c *gin.Context) {
 	var data getActivityData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
 	user, err := sessionService.GetUserSession(c)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.NotLogin, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.NotLogin, err)
 		return
 	}
 
 	list, err := activityService.GetActivityList(data.Campus)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 

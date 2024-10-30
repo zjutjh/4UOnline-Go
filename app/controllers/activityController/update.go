@@ -29,36 +29,36 @@ func UpdateActivity(c *gin.Context) {
 	var data updateActivityData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
 	// 转换时间
 	startTime, err := time.Parse(time.RFC3339, data.StartTime)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 	endTime, err := time.Parse(time.RFC3339, data.EndTime)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
 	activity, err := activityService.GetActivityById(data.ID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		utils.JsonErrorResponse(c, apiException.ActivityNotFound, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ActivityNotFound, err)
 		return
 	}
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 
 	user := c.GetUint("user_id")
 	adminType := c.GetUint("admin_type")
 	if activity.AuthorID != user && adminType != 4 {
-		utils.JsonErrorResponse(c, apiException.NotPermission, utils.LevelInfo, nil)
+		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
 
@@ -75,7 +75,7 @@ func UpdateActivity(c *gin.Context) {
 
 	err = activityService.SaveActivity(activity)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 

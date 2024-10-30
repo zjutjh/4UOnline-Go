@@ -27,19 +27,19 @@ func CreateActivity(c *gin.Context) {
 	var data createActivityData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
 	// 转换时间
 	startTime, err := time.Parse(time.RFC3339, data.StartTime)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 	endTime, err := time.Parse(time.RFC3339, data.EndTime)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
@@ -55,7 +55,7 @@ func CreateActivity(c *gin.Context) {
 		AuthorID:     c.GetUint("user_id"),
 	})
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 

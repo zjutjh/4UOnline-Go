@@ -17,7 +17,7 @@ func DeleteActivity(c *gin.Context) {
 	var data deleteActivityData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
@@ -25,9 +25,9 @@ func DeleteActivity(c *gin.Context) {
 	activity, err := activityService.GetActivityById(data.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			utils.JsonErrorResponse(c, apiException.ActivityNotFound, utils.LevelInfo, err)
+			apiException.AbortWithException(c, apiException.ActivityNotFound, err)
 		} else {
-			utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+			apiException.AbortWithException(c, apiException.ServerError, err)
 		}
 		return
 	}
@@ -35,13 +35,13 @@ func DeleteActivity(c *gin.Context) {
 	user := c.GetUint("user_id")
 	adminType := c.GetUint("admin_type")
 	if activity.AuthorID != user && adminType != 4 {
-		utils.JsonErrorResponse(c, apiException.NotPermission, utils.LevelInfo, nil)
+		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
 
 	err = activityService.DeleteActivityById(data.ID)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 
