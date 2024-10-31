@@ -167,7 +167,7 @@ func createEncoder(cfg *Config) zapcore.Encoder {
 // addAdditionalOptions 添加额外的选项
 func addAdditionalOptions(cfg *Config, options *[]zap.Option) {
 	if !cfg.DisableCaller {
-		*options = append(*options, zap.AddCallerSkip(2)) // 添加调用方要求
+		*options = append(*options, zap.AddCallerSkip(1)) // 添加调用方要求
 		*options = append(*options, zap.AddCaller())      // 添加调用方信息
 	}
 	if !cfg.DisableStacktrace {

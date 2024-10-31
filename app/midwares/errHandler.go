@@ -1,8 +1,8 @@
 package midwares
 
 import (
+	"errors"
 	"net/http"
-	"runtime"
 
 	"4u-go/app/apiException"
 	"4u-go/app/utils"
@@ -14,24 +14,28 @@ import (
 // 如果存在错误，将返回相应的 JSON 响应。
 func ErrHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		defer func() {
-			// 恢复恐慌并处理
-			if err := recover(); err != nil {
-				// 打印恐慌信息及堆栈跟踪
-				stackTrace := make([]byte, 4096)
-				stackSize := runtime.Stack(stackTrace, true)
-				// After
-				zap.L().Panic("Panic recovered",
-					zap.Any("error", err),
-					zap.ByteString("stackTrace", stackTrace[:stackSize]))
+		// 向下执行请求
+		c.Next()
 
-				// 返回 500 错误响应
-				apiErr := apiException.ServerError
-				utils.JsonResponse(c, http.StatusOK, apiErr.Code, apiErr.Msg, nil)
+		// 如果存在错误，则处理错误
+		if len(c.Errors) > 0 {
+			err := c.Errors.Last().Err
+			if err != nil {
+				var apiErr *apiException.Error
+
+				// 尝试将错误转换为 apiException
+				ok := errors.As(err, &apiErr)
+
+				// 如果转换失败，则使用 ServerError
+				if !ok {
+					apiErr = apiException.ServerError
+					zap.L().Error("Unknown Error Occurred", zap.Error(err))
+				}
+
+				utils.JsonErrorResponse(c, apiErr.Code, apiErr.Msg)
+				return
 			}
-		}()
-
-		c.Next() // 继续处理请求
+		}
 	}
 }
 
@@ -43,5 +47,5 @@ func HandleNotFound(c *gin.Context) {
 		zap.String("path", c.Request.URL.Path),
 		zap.String("method", c.Request.Method),
 	)
-	c.JSON(err.StatusCode, err)
+	utils.JsonResponse(c, http.StatusNotFound, err.Code, err.Msg, nil)
 }
