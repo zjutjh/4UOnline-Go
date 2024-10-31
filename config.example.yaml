@@ -19,3 +19,20 @@ redis:
 wechat: # 微信小程序相关配置 (切记不能泄漏,不能为空）
   appid:
   appsecret:
+
+
+user:
+  host:
+
+log:
+  development: true       # 是否开启开发模式  true: 开启 false: 关闭
+  disableCaller: false     # 是否禁用调用方
+  disableStacktrace: false # 是否禁用堆栈跟踪
+  encoding: "json"        # 编码格式 json: json格式 console: 控制台格式
+  level: "info"           # 日志级别 debug: 调试 info: 信息 warn: 警告 error: 错误 dpanic: 严重 panic: 恐慌 fatal: 致命
+  name: "4u"              # 日志名称
+  writers: "console,file" # 日志输出方式 console: 控制台 file: 文件
+  loggerDir: "./logs"     # 日志目录
+  logMaxSize: 10          # 单个日志文件最大大小 单位: MB
+  logMaxAge: 7            # 日志保留天数
+  logCompress: false      # 是否压缩日志文件

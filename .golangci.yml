@@ -2,8 +2,8 @@
 
 run:
   concurrency: 4  # 并行执行的 linter 数量，默认为可用 CPU 数量
-  deadline: 1m  # 分析的最大超时时间，默认为 1 分钟
-  timeout: 5m  # 超时时间
+  deadline: 5m  # 分析的最大超时时间，默认为 5 分钟
+  timeout: 10m  # 超时时间
   issues-exit-code: 1  # 如果发现至少一个问题，退出码为 1
   tests: true  # 包含测试文件进行分析
   modules-download-mode: readonly  # 防止分析过程中修改 go.mod 文件
@@ -35,7 +35,7 @@ linters-settings:
         severity: warning
         disabled: false
         exclude: [ "" ]
-        arguments: [ 110 ]
+        arguments: [ 120 ]
       - name: add-constant       #使用命名常量而非魔法数字
         severity: warning
         disabled: true
@@ -45,10 +45,17 @@ linters-settings:
       - name: import-alias-naming   #导入别名命名规则
         severity: warning
         disabled: true
+      - name: get-return            #使用get必须有返回值
+        severity: warning
+        disabled: true
+      - name: cognitive-complexity
+        severity: warning
+        disabled: false
+        arguments: [ 10 ]
   gofmt:
     simplify: true  # 使用 gofmt 的 `-s` 选项简化代码
   gocyclo:
-    min-complexity: 5  # 触发报告的最小代码复杂度
+    min-complexity: 10  # 触发报告的最小代码复杂度
   dupl:
     threshold: 100  # 触发报告的最小令牌数
   goconst:

@@ -9,6 +9,8 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/silenceper/wechat/v2 v2.1.7
 	github.com/spf13/viper v1.19.0
+	go.uber.org/zap v1.21.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12
 )
