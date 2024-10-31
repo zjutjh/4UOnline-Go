@@ -1,3 +1,7 @@
+server:
+  port: "8080"
+  debug: true
+
 database:
   name: 4u_db
   host: "127.0.0.1"
