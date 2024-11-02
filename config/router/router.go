@@ -34,6 +34,7 @@ func Init(r *gin.Engine) {
 
 		announcement := api.Group("/announcement")
 		{
+			announcement.GET("", announcementController.GetAnnouncementList)
 			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
 		}
 	}
