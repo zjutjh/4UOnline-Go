@@ -1,0 +1,60 @@
+package announcementController
+
+import (
+	"errors"
+	"strings"
+
+	"4u-go/app/apiException"
+	"4u-go/app/services/announcementService"
+	"4u-go/app/utils"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+type updateAnnouncementData struct {
+	ID      uint     `json:"id" binding:"required"`
+	Title   string   `json:"title" binding:"required"`
+	Content string   `json:"content" binding:"required"`
+	Photo   []string `json:"photo"`
+}
+
+// UpdateAnnouncement 创建一条公告通知
+func UpdateAnnouncement(c *gin.Context) {
+	var data updateAnnouncementData
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ParamError, err)
+		return
+	}
+
+	announcement, err := announcementService.GetAnnouncementById(data.ID)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		apiException.AbortWithException(c, apiException.AnnouncementNotFound, err)
+		return
+	}
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ServerError, err)
+		return
+	}
+
+	user := c.GetUint("user_id")
+	adminType := c.GetUint("admin_type")
+	if announcement.AuthorID != user && adminType != 4 {
+		apiException.AbortWithException(c, apiException.NotPermission, nil)
+		return
+	}
+
+	{ // 更新公告信息
+		announcement.Title = data.Title
+		announcement.Content = data.Content
+		announcement.Imgs = strings.Join(data.Photo, ",")
+	}
+
+	err = announcementService.SaveAnnouncement(announcement)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ServerError, err)
+		return
+	}
+
+	utils.JsonSuccessResponse(c, nil)
+}

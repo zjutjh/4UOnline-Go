@@ -36,6 +36,7 @@ func Init(r *gin.Engine) {
 		{
 			announcement.GET("", announcementController.GetAnnouncementList)
 			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
+			announcement.PUT("", midwares.CheckAdmin, announcementController.UpdateAnnouncement)
 		}
 	}
 }
