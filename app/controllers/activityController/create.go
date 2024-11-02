@@ -53,6 +53,7 @@ func CreateActivity(c *gin.Context) {
 		Location:     data.Location,
 		Imgs:         strings.Join(data.Photo, ","),
 		AuthorID:     c.GetUint("user_id"),
+		PublishTime:  time.Now(),
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
