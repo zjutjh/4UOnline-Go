@@ -1,7 +1,6 @@
 package announcementController
 
 import (
-	"strings"
 	"time"
 
 	"4u-go/app/apiException"
@@ -12,9 +11,8 @@ import (
 )
 
 type createAnnouncementData struct {
-	Title   string   `json:"title" binding:"required"`
-	Content string   `json:"content" binding:"required"`
-	Photo   []string `json:"photo"`
+	Title   string `json:"title" binding:"required"`
+	Content string `json:"content" binding:"required"`
 }
 
 // CreateAnnouncement 创建一条公告通知
@@ -29,7 +27,6 @@ func CreateAnnouncement(c *gin.Context) {
 	err = announcementService.SaveAnnouncement(models.Announcement{
 		Title:       data.Title,
 		Content:     data.Content,
-		Imgs:        strings.Join(data.Photo, ","),
 		PublishTime: time.Now(),
 		AuthorID:    c.GetUint("user_id"),
 	})

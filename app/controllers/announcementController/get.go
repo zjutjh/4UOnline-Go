@@ -1,7 +1,6 @@
 package announcementController
 
 import (
-	"strings"
 	"time"
 
 	"4u-go/app/apiException"
@@ -16,12 +15,11 @@ type getAnnouncementResponse struct {
 }
 
 type announcementElement struct {
-	ID          uint     `json:"id"`
-	Title       string   `json:"title"`
-	Content     string   `json:"content"`
-	PublishTime string   `json:"publish_time"`
-	Photo       []string `json:"photo"`
-	Editable    bool     `json:"editable"`
+	ID          uint   `json:"id"`
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	PublishTime string `json:"publish_time"`
+	Editable    bool   `json:"editable"`
 }
 
 // GetAnnouncementList 获取公告列表
@@ -45,7 +43,6 @@ func GetAnnouncementList(c *gin.Context) {
 			Title:       announcement.Title,
 			Content:     announcement.Content,
 			PublishTime: announcement.PublishTime.Format(time.RFC3339),
-			Photo:       strings.Split(announcement.Imgs, ","),
 			Editable:    announcement.AuthorID == user.ID || user.Type == 4,
 		})
 	}
