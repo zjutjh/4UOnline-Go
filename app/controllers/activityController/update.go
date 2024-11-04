@@ -2,7 +2,6 @@ package activityController
 
 import (
 	"errors"
-	"strings"
 	"time"
 
 	"4u-go/app/apiException"
@@ -13,15 +12,15 @@ import (
 )
 
 type updateActivityData struct {
-	ID           uint     `json:"id" binding:"required"`
-	Title        string   `json:"title" binding:"required"`
-	Introduction string   `json:"introduction" binding:"required"`
-	Department   string   `json:"department" binding:"required"`
-	StartTime    string   `json:"start_time" binding:"required"`
-	EndTime      string   `json:"end_time" binding:"required"`
-	Campus       uint8    `json:"campus" binding:"required"`
-	Location     string   `json:"location" binding:"required"`
-	Photo        []string `json:"photo"`
+	ID           uint   `json:"id" binding:"required"`
+	Title        string `json:"title" binding:"required"`
+	Introduction string `json:"introduction" binding:"required"`
+	Department   string `json:"department" binding:"required"`
+	StartTime    string `json:"start_time" binding:"required"`
+	EndTime      string `json:"end_time" binding:"required"`
+	Campus       uint8  `json:"campus" binding:"required"`
+	Location     string `json:"location" binding:"required"`
+	Img          string `json:"img"`
 }
 
 // UpdateActivity 更新校园活动
@@ -70,7 +69,7 @@ func UpdateActivity(c *gin.Context) {
 		activity.EndTime = endTime
 		activity.Campus = data.Campus
 		activity.Location = data.Location
-		activity.Imgs = strings.Join(data.Photo, ",")
+		activity.Img = data.Img
 	}
 
 	err = activityService.SaveActivity(activity)

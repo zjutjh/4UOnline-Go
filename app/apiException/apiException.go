@@ -30,6 +30,7 @@ var (
 	NotLogin              = NewError(200509, log.LevelInfo, "未登录")
 	NotPermission         = NewError(200510, log.LevelInfo, "该用户无权限")
 	ActivityNotFound      = NewError(200511, log.LevelInfo, "活动不存在")
+	AnnouncementNotFound  = NewError(200512, log.LevelInfo, "公告不存在")
 
 	NotInit  = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
 	NotFound = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))

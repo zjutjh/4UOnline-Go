@@ -2,6 +2,7 @@ package router
 
 import (
 	"4u-go/app/controllers/activityController"
+	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/midwares"
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,14 @@ func Init(r *gin.Engine) {
 			activity.POST("", midwares.CheckAdmin, activityController.CreateActivity)
 			activity.PUT("", midwares.CheckAdmin, activityController.UpdateActivity)
 			activity.DELETE("", midwares.CheckAdmin, activityController.DeleteActivity)
+		}
+
+		announcement := api.Group("/announcement")
+		{
+			announcement.GET("", announcementController.GetAnnouncementList)
+			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
+			announcement.PUT("", midwares.CheckAdmin, announcementController.UpdateAnnouncement)
+			announcement.DELETE("", midwares.CheckAdmin, announcementController.DeleteAnnouncement)
 		}
 	}
 }
