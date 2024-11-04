@@ -2,6 +2,7 @@ package router
 
 import (
 	"4u-go/app/controllers/activityController"
+	"4u-go/app/controllers/adminController"
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/midwares"
@@ -22,6 +23,11 @@ func Init(r *gin.Engine) {
 			user.POST("/login/wechat", userController.WeChatLogin)
 			user.POST("/login", userController.AuthByPassword)
 			user.POST("/login/session", userController.AuthBySession)
+		}
+
+		admin := api.Group("/admin")
+		{
+			admin.POST("/create/key", adminController.CreateAdminByKey)
 		}
 
 		activity := api.Group("/activity")
