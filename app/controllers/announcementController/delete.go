@@ -1,6 +1,8 @@
 package announcementController
 
 import (
+	"errors"
+
 	"4u-go/app/apiException"
 	"4u-go/app/services/announcementService"
 	"4u-go/app/utils"
@@ -24,7 +26,7 @@ func DeleteAnnouncement(c *gin.Context) {
 	// 判断公告是否存在
 	announcement, err := announcementService.GetAnnouncementById(data.ID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			apiException.AbortWithException(c, apiException.AnnouncementNotFound, err)
 		} else {
 			apiException.AbortWithException(c, apiException.ServerError, err)

@@ -1,6 +1,8 @@
 package activityController
 
 import (
+	"errors"
+
 	"4u-go/app/apiException"
 	"4u-go/app/services/activityService"
 	"4u-go/app/utils"
@@ -24,7 +26,7 @@ func DeleteActivity(c *gin.Context) {
 	// 判断活动是否存在
 	activity, err := activityService.GetActivityById(data.ID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			apiException.AbortWithException(c, apiException.ActivityNotFound, err)
 		} else {
 			apiException.AbortWithException(c, apiException.ServerError, err)
