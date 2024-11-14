@@ -59,6 +59,7 @@ func Init(r *gin.Engine) {
 		website := api.Group("/website")
 		{
 			website.POST("", midwares.CheckAdmin, websiteController.CreateWebsite)
+			website.DELETE("", midwares.CheckAdmin, websiteController.DeleteWebsite)
 		}
 	}
 }
