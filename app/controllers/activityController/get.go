@@ -5,7 +5,6 @@ import (
 
 	"4u-go/app/apiException"
 	"4u-go/app/services/activityService"
-	"4u-go/app/services/sessionService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -41,11 +40,7 @@ func GetActivityList(c *gin.Context) {
 		return
 	}
 
-	user, err := sessionService.GetUserSession(c)
-	if err != nil {
-		apiException.AbortWithException(c, apiException.NotLogin, err)
-		return
-	}
+	user := utils.GetUser(c)
 
 	list, err := activityService.GetActivityList(data.Campus)
 	if err != nil {

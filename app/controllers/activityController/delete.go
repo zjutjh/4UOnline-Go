@@ -35,9 +35,8 @@ func DeleteActivity(c *gin.Context) {
 		return
 	}
 
-	user := c.GetUint("user_id")
-	adminType := c.GetUint("admin_type")
-	if activity.AuthorID != user && adminType != models.SuperAdmin {
+	user := utils.GetUser(c)
+	if activity.AuthorID != user.ID && user.Type != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}

@@ -28,7 +28,7 @@ func CreateAnnouncement(c *gin.Context) {
 		Title:       data.Title,
 		Content:     data.Content,
 		PublishTime: time.Now(),
-		AuthorID:    c.GetUint("user_id"),
+		AuthorID:    utils.GetUser(c).ID,
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

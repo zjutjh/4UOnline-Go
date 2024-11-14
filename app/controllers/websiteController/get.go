@@ -70,13 +70,12 @@ func GetEditableWebsites(c *gin.Context) {
 	}
 	websiteList := list
 
-	user := c.GetUint("user_id")
-	adminType := c.GetUint("admin_type")
-	if adminType != models.SuperAdmin {
+	user := utils.GetUser(c)
+	if user.Type != models.SuperAdmin {
 		editableList := make([]models.Website, 0)
 		for _, website := range list {
 			// TODO: 根据管理员对应学院进行筛选
-			if website.AuthorID == user {
+			if website.AuthorID == user.ID {
 				editableList = append(editableList, website)
 			}
 		}

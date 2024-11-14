@@ -35,7 +35,7 @@ func CreateWebsite(c *gin.Context) {
 		Description: data.Description,
 		Condition:   data.Condition,
 		URL:         data.URL,
-		AuthorID:    c.GetUint("user_id"),
+		AuthorID:    utils.GetUser(c).ID,
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

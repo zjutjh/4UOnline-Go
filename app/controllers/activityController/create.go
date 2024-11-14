@@ -51,7 +51,7 @@ func CreateActivity(c *gin.Context) {
 		Campus:       data.Campus,
 		Location:     data.Location,
 		Img:          data.Img,
-		AuthorID:     c.GetUint("user_id"),
+		AuthorID:     utils.GetUser(c).ID,
 		PublishTime:  time.Now(),
 	})
 	if err != nil {

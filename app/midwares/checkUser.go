@@ -7,6 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CheckLogin 验证用户登录
+func CheckLogin(c *gin.Context) {
+	user, err := sessionService.GetUserSession(c)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.NotLogin, err)
+		return
+	}
+	c.Set("user", user)
+	c.Next()
+}
+
 // CheckAdmin 验证管理员权限
 func CheckAdmin(c *gin.Context) {
 	user, err := sessionService.GetUserSession(c)
@@ -18,8 +29,7 @@ func CheckAdmin(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
-	c.Set("admin_type", user.Type)
-	c.Set("user_id", user.ID)
+	c.Set("user", user)
 	c.Next()
 }
 
@@ -34,5 +44,6 @@ func CheckSuperAdmin(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
+	c.Set("user", user)
 	c.Next()
 }
