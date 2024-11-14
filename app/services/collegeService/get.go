@@ -14,7 +14,7 @@ func GetCollegeList() (colleges []models.College, err error) {
 
 // GetCollegeById 获取指定ID的学院
 func GetCollegeById(id uint) (college models.College, err error) {
-	database.DB.Where("id = ?", id).First(&college)
-	err = database.DB.Error
+	result := database.DB.Where("id = ?", id).First(&college)
+	err = result.Error
 	return college, err
 }

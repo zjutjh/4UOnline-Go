@@ -1,6 +1,8 @@
 package websiteController
 
 import (
+	"time"
+
 	"4u-go/app/apiException"
 	"4u-go/app/models"
 	"4u-go/app/services/websiteService"
@@ -36,6 +38,7 @@ func CreateWebsite(c *gin.Context) {
 		Condition:   data.Condition,
 		URL:         data.URL,
 		AuthorID:    utils.GetUser(c).ID,
+		CreateAt:    time.Now(),
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

@@ -25,7 +25,7 @@ func GetAllWebsites() (websites []models.Website, err error) {
 
 // GetWebsiteById 获取指定ID的网站
 func GetWebsiteById(id uint) (website models.Website, err error) {
-	database.DB.Where("id = ?", id).First(&website)
-	err = database.DB.Error
+	result := database.DB.Where("id = ?", id).First(&website)
+	err = result.Error
 	return website, err
 }

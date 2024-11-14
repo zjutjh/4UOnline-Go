@@ -18,7 +18,7 @@ func GetActivityList(campus uint8) (activities []models.Activity, err error) {
 
 // GetActivityById 获取指定ID的校园活动
 func GetActivityById(id uint) (activity models.Activity, err error) {
-	database.DB.Where("id = ?", id).First(&activity)
-	err = database.DB.Error
+	result := database.DB.Where("id = ?", id).First(&activity)
+	err = result.Error
 	return activity, err
 }
