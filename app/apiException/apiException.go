@@ -33,6 +33,7 @@ var (
 	AnnouncementNotFound  = NewError(200512, log.LevelInfo, "公告不存在")
 	AdminKeyError         = NewError(200513, log.LevelInfo, "管理员注册密钥错误")
 	AdminAlreadyExisted   = NewError(200514, log.LevelInfo, "管理员账号已存在")
+	CollageNotFound       = NewError(200515, log.LevelInfo, "学院不存在")
 
 	NotInit  = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
 	NotFound = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))

@@ -33,6 +33,7 @@ func Init(r *gin.Engine) {
 			collage := admin.Group("/collage", midwares.CheckSuperAdmin)
 			{
 				collage.POST("", collageController.CreateCollage)
+				collage.DELETE("", collageController.DeleteCollage)
 			}
 		}
 
