@@ -6,6 +6,7 @@ import (
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/collegeController"
 	"4u-go/app/controllers/userController"
+	"4u-go/app/controllers/websiteController"
 	"4u-go/app/midwares"
 	"github.com/gin-gonic/gin"
 )
@@ -53,6 +54,11 @@ func Init(r *gin.Engine) {
 			college.PUT("", midwares.CheckSuperAdmin, collegeController.UpdateCollege)
 			college.DELETE("", midwares.CheckSuperAdmin, collegeController.DeleteCollege)
 			college.GET("", collegeController.GetCollegeList)
+		}
+
+		website := api.Group("/website")
+		{
+			website.POST("", midwares.CheckAdmin, websiteController.CreateWebsite)
 		}
 	}
 }
