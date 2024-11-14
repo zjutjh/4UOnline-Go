@@ -4,6 +4,7 @@ import (
 	"4u-go/app/controllers/activityController"
 	"4u-go/app/controllers/adminController"
 	"4u-go/app/controllers/announcementController"
+	"4u-go/app/controllers/collageController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/midwares"
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,11 @@ func Init(r *gin.Engine) {
 		admin := api.Group("/admin")
 		{
 			admin.POST("/create/key", adminController.CreateAdminByKey)
+
+			collage := admin.Group("/collage", midwares.CheckSuperAdmin)
+			{
+				collage.POST("", collageController.CreateCollage)
+			}
 		}
 
 		activity := api.Group("/activity")
