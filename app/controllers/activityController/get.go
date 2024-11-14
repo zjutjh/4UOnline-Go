@@ -57,7 +57,7 @@ func GetActivityList(c *gin.Context) {
 			Department:   activity.Department,
 			StartTime:    activity.StartTime.Format(time.RFC3339),
 			EndTime:      activity.EndTime.Format(time.RFC3339),
-			PublishTime:  activity.PublishTime.Format(time.RFC3339),
+			PublishTime:  activity.CreatedAt.Format(time.RFC3339),
 			Campus:       activity.Campus,
 			Location:     activity.Location,
 			Img:          activity.Img,

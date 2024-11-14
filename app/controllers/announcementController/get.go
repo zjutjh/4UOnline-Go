@@ -37,7 +37,7 @@ func GetAnnouncementList(c *gin.Context) {
 			ID:          announcement.ID,
 			Title:       announcement.Title,
 			Content:     announcement.Content,
-			PublishTime: announcement.PublishTime.Format(time.RFC3339),
+			PublishTime: announcement.CreatedAt.Format(time.RFC3339),
 			Editable:    announcement.AuthorID == user.ID || user.Type == 4,
 		})
 	}

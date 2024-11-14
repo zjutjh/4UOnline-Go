@@ -52,7 +52,6 @@ func CreateActivity(c *gin.Context) {
 		Location:     data.Location,
 		Img:          data.Img,
 		AuthorID:     utils.GetUser(c).ID,
-		PublishTime:  time.Now(),
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

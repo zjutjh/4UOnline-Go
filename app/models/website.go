@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 // Website 常用网站的结构体
 type Website struct {
@@ -12,5 +14,5 @@ type Website struct {
 	URL         string    `json:"url"`         // 网站地址
 	Condition   string    `json:"condition"`   // 访问条件
 	AuthorID    uint      `json:"author"`      // 网站发布者ID
-	CreateAt    time.Time `json:"create_at"`   // 记录创建时间
+	CreatedAt   time.Time `json:"created_at"`  // 记录创建时间
 }

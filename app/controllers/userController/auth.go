@@ -57,7 +57,7 @@ func AuthByPassword(c *gin.Context) {
 			"studentID":  user.StudentID,
 			"userType":   user.Type,
 			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreateTime,
+			"createTime": user.CreatedAt,
 		},
 	})
 }
@@ -79,7 +79,7 @@ func AuthBySession(c *gin.Context) {
 			"studentID":  user.StudentID,
 			"userType":   user.Type,
 			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreateTime,
+			"createTime": user.CreatedAt,
 		},
 	})
 }
@@ -119,7 +119,7 @@ func WeChatLogin(c *gin.Context) {
 			"studentID":  user.StudentID,
 			"userType":   user.Type,
 			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreateTime,
+			"createTime": user.CreatedAt,
 		},
 	})
 }
