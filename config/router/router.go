@@ -29,12 +29,6 @@ func Init(r *gin.Engine) {
 		admin := api.Group("/admin")
 		{
 			admin.POST("/create/key", adminController.CreateAdminByKey)
-
-			collage := admin.Group("/collage", midwares.CheckSuperAdmin)
-			{
-				collage.POST("", collageController.CreateCollage)
-				collage.DELETE("", collageController.DeleteCollage)
-			}
 		}
 
 		activity := api.Group("/activity")
@@ -51,6 +45,13 @@ func Init(r *gin.Engine) {
 			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
 			announcement.PUT("", midwares.CheckAdmin, announcementController.UpdateAnnouncement)
 			announcement.DELETE("", midwares.CheckAdmin, announcementController.DeleteAnnouncement)
+		}
+
+		collage := api.Group("/collage")
+		{
+			collage.POST("", midwares.CheckSuperAdmin, collageController.CreateCollage)
+			collage.DELETE("", midwares.CheckSuperAdmin, collageController.DeleteCollage)
+			collage.GET("", collageController.GetCollageList)
 		}
 	}
 }
