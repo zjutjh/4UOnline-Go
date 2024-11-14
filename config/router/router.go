@@ -4,7 +4,7 @@ import (
 	"4u-go/app/controllers/activityController"
 	"4u-go/app/controllers/adminController"
 	"4u-go/app/controllers/announcementController"
-	"4u-go/app/controllers/collageController"
+	"4u-go/app/controllers/collegeController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/midwares"
 	"github.com/gin-gonic/gin"
@@ -47,12 +47,12 @@ func Init(r *gin.Engine) {
 			announcement.DELETE("", midwares.CheckAdmin, announcementController.DeleteAnnouncement)
 		}
 
-		collage := api.Group("/collage")
+		college := api.Group("/college")
 		{
-			collage.POST("", midwares.CheckSuperAdmin, collageController.CreateCollage)
-			collage.PUT("", midwares.CheckSuperAdmin, collageController.UpdateCollage)
-			collage.DELETE("", midwares.CheckSuperAdmin, collageController.DeleteCollage)
-			collage.GET("", collageController.GetCollageList)
+			college.POST("", midwares.CheckSuperAdmin, collegeController.CreateCollege)
+			college.PUT("", midwares.CheckSuperAdmin, collegeController.UpdateCollege)
+			college.DELETE("", midwares.CheckSuperAdmin, collegeController.DeleteCollege)
+			college.GET("", collegeController.GetCollegeList)
 		}
 	}
 }

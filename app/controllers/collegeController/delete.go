@@ -1,22 +1,22 @@
-package collageController
+package collegeController
 
 import (
 	"errors"
 
 	"4u-go/app/apiException"
-	"4u-go/app/services/collageService"
+	"4u-go/app/services/collegeService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-type deleteCollageData struct {
+type deleteCollegeData struct {
 	ID uint `json:"id" binding:"required"`
 }
 
-// DeleteCollage 删除学院
-func DeleteCollage(c *gin.Context) {
-	var data deleteCollageData
+// DeleteCollege 删除学院
+func DeleteCollege(c *gin.Context) {
+	var data deleteCollegeData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ParamError, err)
@@ -24,7 +24,7 @@ func DeleteCollage(c *gin.Context) {
 	}
 
 	// 判断学院是否存在
-	_, err = collageService.GetCollageById(data.ID)
+	_, err = collegeService.GetCollegeById(data.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
@@ -34,7 +34,7 @@ func DeleteCollage(c *gin.Context) {
 		return
 	}
 
-	err = collageService.DeleteCollageById(data.ID)
+	err = collegeService.DeleteCollegeById(data.ID)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return

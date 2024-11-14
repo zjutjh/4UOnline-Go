@@ -1,30 +1,30 @@
-package collageController
+package collegeController
 
 import (
 	"errors"
 
 	"4u-go/app/apiException"
-	"4u-go/app/services/collageService"
+	"4u-go/app/services/collegeService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-type updateCollageData struct {
+type updateCollegeData struct {
 	ID   uint   `json:"id" binding:"required"`
 	Name string `json:"name" binding:"required"`
 }
 
-// UpdateCollage 更新学院信息
-func UpdateCollage(c *gin.Context) {
-	var data updateCollageData
+// UpdateCollege 更新学院信息
+func UpdateCollege(c *gin.Context) {
+	var data updateCollegeData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
-	collage, err := collageService.GetCollageById(data.ID)
+	college, err := collegeService.GetCollegeById(data.ID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		return
@@ -35,10 +35,10 @@ func UpdateCollage(c *gin.Context) {
 	}
 
 	{ // 更新学院信息
-		collage.Name = data.Name
+		college.Name = data.Name
 	}
 
-	err = collageService.SaveCollage(collage)
+	err = collegeService.SaveCollege(college)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return

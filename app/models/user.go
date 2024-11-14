@@ -20,7 +20,7 @@ type User struct {
 const (
 	Undergraduate uint = iota // 本科生
 	Postgraduate              // 研究生
-	CollageAdmin              // 学院管理员
+	CollegeAdmin              // 学院管理员
 	ForU                      // ForU工作人员
 	SuperAdmin                // 超级管理员
 )

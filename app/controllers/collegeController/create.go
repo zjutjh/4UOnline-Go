@@ -1,27 +1,27 @@
-package collageController
+package collegeController
 
 import (
 	"4u-go/app/apiException"
 	"4u-go/app/models"
-	"4u-go/app/services/collageService"
+	"4u-go/app/services/collegeService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type createCollageData struct {
+type createCollegeData struct {
 	Name string `json:"name" binding:"required"`
 }
 
-// CreateCollage 新建学院
-func CreateCollage(c *gin.Context) {
-	var data createCollageData
+// CreateCollege 新建学院
+func CreateCollege(c *gin.Context) {
+	var data createCollegeData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
-	err = collageService.SaveCollage(models.Collage{
+	err = collegeService.SaveCollege(models.College{
 		Name: data.Name,
 	})
 	if err != nil {
