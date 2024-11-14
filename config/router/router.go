@@ -50,6 +50,7 @@ func Init(r *gin.Engine) {
 		collage := api.Group("/collage")
 		{
 			collage.POST("", midwares.CheckSuperAdmin, collageController.CreateCollage)
+			collage.PUT("", midwares.CheckSuperAdmin, collageController.UpdateCollage)
 			collage.DELETE("", midwares.CheckSuperAdmin, collageController.DeleteCollage)
 			collage.GET("", collageController.GetCollageList)
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 type createCollageData struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 }
 
 // CreateCollage 新建学院
@@ -21,7 +21,7 @@ func CreateCollage(c *gin.Context) {
 		return
 	}
 
-	err = collageService.CreateCollage(models.Collage{
+	err = collageService.SaveCollage(models.Collage{
 		Name: data.Name,
 	})
 	if err != nil {

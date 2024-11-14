@@ -11,7 +11,7 @@ import (
 )
 
 type deleteCollageData struct {
-	ID uint `json:"id"`
+	ID uint `json:"id" binding:"required"`
 }
 
 // DeleteCollage 删除学院
