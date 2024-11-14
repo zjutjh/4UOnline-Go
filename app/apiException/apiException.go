@@ -29,8 +29,7 @@ var (
 	NoThatPasswordOrWrong = NewError(200508, log.LevelInfo, "密码错误")
 	NotLogin              = NewError(200509, log.LevelInfo, "未登录")
 	NotPermission         = NewError(200510, log.LevelInfo, "该用户无权限")
-	ActivityNotFound      = NewError(200511, log.LevelInfo, "活动不存在")
-	AnnouncementNotFound  = NewError(200512, log.LevelInfo, "公告不存在")
+	ResourceNotFound      = NewError(200511, log.LevelInfo, "访问的资源不存在")
 	AdminKeyError         = NewError(200513, log.LevelInfo, "管理员注册密钥错误")
 	AdminAlreadyExisted   = NewError(200514, log.LevelInfo, "管理员账号已存在")
 

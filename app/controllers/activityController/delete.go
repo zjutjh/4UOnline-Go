@@ -1,7 +1,10 @@
 package activityController
 
 import (
+	"errors"
+
 	"4u-go/app/apiException"
+	"4u-go/app/models"
 	"4u-go/app/services/activityService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
@@ -24,8 +27,8 @@ func DeleteActivity(c *gin.Context) {
 	// 判断活动是否存在
 	activity, err := activityService.GetActivityById(data.ID)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			apiException.AbortWithException(c, apiException.ActivityNotFound, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		} else {
 			apiException.AbortWithException(c, apiException.ServerError, err)
 		}
@@ -34,7 +37,7 @@ func DeleteActivity(c *gin.Context) {
 
 	user := c.GetUint("user_id")
 	adminType := c.GetUint("admin_type")
-	if activity.AuthorID != user && adminType != 4 {
+	if activity.AuthorID != user && adminType != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}

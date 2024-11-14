@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"4u-go/app/apiException"
+	"4u-go/app/models"
 	"4u-go/app/services/activityService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
@@ -46,7 +47,7 @@ func UpdateActivity(c *gin.Context) {
 
 	activity, err := activityService.GetActivityById(data.ID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		apiException.AbortWithException(c, apiException.ActivityNotFound, err)
+		apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		return
 	}
 	if err != nil {
@@ -56,7 +57,7 @@ func UpdateActivity(c *gin.Context) {
 
 	user := c.GetUint("user_id")
 	adminType := c.GetUint("admin_type")
-	if activity.AuthorID != user && adminType != 4 {
+	if activity.AuthorID != user && adminType != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
