@@ -11,7 +11,7 @@ import (
 )
 
 // CreateAdminUser 创建管理员用户
-func CreateAdminUser(username string, password string, userType models.UserType, college string) (*models.User, error) {
+func CreateAdminUser(username string, password string, userType uint, college string) (*models.User, error) {
 	h := sha256.New()
 	if _, err := h.Write([]byte(password)); err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)

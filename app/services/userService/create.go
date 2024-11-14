@@ -25,7 +25,7 @@ func CreateStudentUser(studentID, password, idCardNumber, email string, usertype
 	}
 
 	user := &models.User{
-		Type:       models.UserType(usertype),
+		Type:       usertype,
 		StudentID:  studentID,
 		CreateTime: time.Now(),
 	}

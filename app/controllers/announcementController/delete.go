@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"4u-go/app/apiException"
+	"4u-go/app/models"
 	"4u-go/app/services/announcementService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
@@ -36,7 +37,7 @@ func DeleteAnnouncement(c *gin.Context) {
 
 	user := c.GetUint("user_id")
 	adminType := c.GetUint("admin_type")
-	if announcement.AuthorID != user && adminType != 4 {
+	if announcement.AuthorID != user && adminType != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}

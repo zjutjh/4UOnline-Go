@@ -2,6 +2,7 @@ package midwares
 
 import (
 	"4u-go/app/apiException"
+	"4u-go/app/models"
 	"4u-go/app/services/sessionService"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ func CheckAdmin(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.NotLogin, err)
 		return
 	}
-	if user.Type < 2 { // 验证管理员权限
+	if user.Type == models.Undergraduate || user.Type == models.Postgraduate { // 验证管理员权限
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
@@ -29,7 +30,7 @@ func CheckSuperAdmin(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.NotLogin, err)
 		return
 	}
-	if user.Type != 4 { // 验证超管权限
+	if user.Type != models.SuperAdmin { // 验证超管权限
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}
