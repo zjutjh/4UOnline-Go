@@ -27,7 +27,7 @@ func DeleteCollage(c *gin.Context) {
 	_, err = collageService.GetCollageById(data.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			apiException.AbortWithException(c, apiException.CollageNotFound, err)
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		} else {
 			apiException.AbortWithException(c, apiException.ServerError, err)
 		}

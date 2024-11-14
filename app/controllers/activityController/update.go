@@ -46,7 +46,7 @@ func UpdateActivity(c *gin.Context) {
 
 	activity, err := activityService.GetActivityById(data.ID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		apiException.AbortWithException(c, apiException.ActivityNotFound, err)
+		apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		return
 	}
 	if err != nil {

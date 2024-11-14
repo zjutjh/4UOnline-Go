@@ -27,7 +27,7 @@ func UpdateAnnouncement(c *gin.Context) {
 
 	announcement, err := announcementService.GetAnnouncementById(data.ID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		apiException.AbortWithException(c, apiException.AnnouncementNotFound, err)
+		apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		return
 	}
 	if err != nil {

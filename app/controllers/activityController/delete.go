@@ -27,7 +27,7 @@ func DeleteActivity(c *gin.Context) {
 	activity, err := activityService.GetActivityById(data.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			apiException.AbortWithException(c, apiException.ActivityNotFound, err)
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		} else {
 			apiException.AbortWithException(c, apiException.ServerError, err)
 		}

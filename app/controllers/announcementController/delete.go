@@ -27,7 +27,7 @@ func DeleteAnnouncement(c *gin.Context) {
 	announcement, err := announcementService.GetAnnouncementById(data.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			apiException.AbortWithException(c, apiException.AnnouncementNotFound, err)
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
 		} else {
 			apiException.AbortWithException(c, apiException.ServerError, err)
 		}
