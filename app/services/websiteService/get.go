@@ -6,8 +6,19 @@ import (
 )
 
 // GetWebsiteList 获取网站列表
-func GetWebsiteList() (websites []models.Website, err error) {
-	result := database.DB.Order("id desc").Find(&websites)
+func GetWebsiteList(websiteType uint, college uint) (websites []models.Website, err error) {
+	db := database.DB.Where("type = ?", websiteType)
+	if websiteType == 2 && college != 0 {
+		db = db.Where("college = ?", college)
+	}
+	result := db.Find(&websites)
+	err = result.Error
+	return websites, err
+}
+
+// GetAllWebsites 获取所有网站
+func GetAllWebsites() (websites []models.Website, err error) {
+	result := database.DB.Find(&websites)
 	err = result.Error
 	return websites, err
 }
