@@ -35,6 +35,7 @@ func Init(r *gin.Engine) {
 		activity := api.Group("/activity")
 		{
 			activity.GET("/list", activityController.GetActivityList)
+			activity.GET("", activityController.GetActivity)
 			activity.POST("", midwares.CheckAdmin, activityController.CreateActivity)
 			activity.PUT("", midwares.CheckAdmin, activityController.UpdateActivity)
 			activity.DELETE("", midwares.CheckAdmin, activityController.DeleteActivity)
