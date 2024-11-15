@@ -6,12 +6,8 @@ import (
 )
 
 // GetActivityList 获取校园活动列表
-func GetActivityList(campus uint8) (activities []models.Activity, err error) {
-	db := database.DB.Order("publish_time desc")
-	if campus != 4 {
-		db = db.Where("campus = ?", campus)
-	}
-	result := db.Find(&activities)
+func GetActivityList() (activities []models.Activity, err error) {
+	result := database.DB.Order("start_time desc").Find(&activities)
 	err = result.Error
 	return activities, err
 }

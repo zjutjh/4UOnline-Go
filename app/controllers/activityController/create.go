@@ -11,14 +11,14 @@ import (
 )
 
 type createActivityData struct {
-	Title        string `json:"title" binding:"required"`
-	Introduction string `json:"introduction" binding:"required"`
-	Department   string `json:"department" binding:"required"`
-	StartTime    string `json:"start_time" binding:"required"`
-	EndTime      string `json:"end_time" binding:"required"`
-	Campus       uint8  `json:"campus" binding:"required"`
-	Location     string `json:"location" binding:"required"`
-	Img          string `json:"img"`
+	Title        string  `json:"title" binding:"required"`
+	Introduction string  `json:"introduction" binding:"required"`
+	Department   string  `json:"department" binding:"required"`
+	StartTime    string  `json:"start_time" binding:"required"`
+	EndTime      string  `json:"end_time" binding:"required"`
+	Campus       []uint8 `json:"campus" binding:"required"`
+	Location     string  `json:"location" binding:"required"`
+	Img          string  `json:"img"`
 }
 
 // CreateActivity 创建一条校园活动
