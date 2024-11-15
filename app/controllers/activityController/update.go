@@ -13,15 +13,15 @@ import (
 )
 
 type updateActivityData struct {
-	ID           uint    `json:"id" binding:"required"`
-	Title        string  `json:"title" binding:"required"`
-	Introduction string  `json:"introduction" binding:"required"`
-	Department   string  `json:"department" binding:"required"`
-	StartTime    string  `json:"start_time" binding:"required"`
-	EndTime      string  `json:"end_time" binding:"required"`
-	Campus       []uint8 `json:"campus" binding:"required"`
-	Location     string  `json:"location" binding:"required"`
-	Img          string  `json:"img"`
+	ID           uint   `json:"id" binding:"required"`
+	Title        string `json:"title" binding:"required"`
+	Introduction string `json:"introduction" binding:"required"`
+	Department   string `json:"department" binding:"required"`
+	StartTime    string `json:"start_time" binding:"required"`
+	EndTime      string `json:"end_time" binding:"required"`
+	Campus       []uint `json:"campus" binding:"required"`
+	Location     string `json:"location" binding:"required"`
+	Img          string `json:"img"`
 }
 
 // UpdateActivity 更新校园活动
@@ -67,7 +67,7 @@ func UpdateActivity(c *gin.Context) {
 		activity.Department = data.Department
 		activity.StartTime = startTime
 		activity.EndTime = endTime
-		activity.Campus = data.Campus
+		activity.Campus = utils.EncodeCampus(data.Campus)
 		activity.Location = data.Location
 		activity.Img = data.Img
 	}

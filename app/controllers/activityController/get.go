@@ -49,16 +49,12 @@ func GetActivityList(c *gin.Context) {
 
 	activityList := make([]activityElement, 0)
 	for _, activity := range list {
-		campus := make([]uint, 0)
-		for _, c := range activity.Campus {
-			campus = append(campus, uint(c))
-		}
 		activityList = append(activityList, activityElement{
 			ID:         activity.ID,
 			Title:      activity.Title,
 			Department: activity.Department,
 			StartTime:  activity.StartTime.Format(time.RFC3339),
-			Campus:     campus,
+			Campus:     utils.DecodeCampus(activity.Campus),
 			Img:        activity.Img,
 		})
 	}
@@ -87,17 +83,13 @@ func GetActivity(c *gin.Context) {
 		return
 	}
 
-	campus := make([]uint, 0)
-	for _, c := range activity.Campus {
-		campus = append(campus, uint(c))
-	}
 	utils.JsonSuccessResponse(c, getActivityResponse{
 		Title:        activity.Title,
 		Introduction: activity.Introduction,
 		Department:   activity.Department,
 		StartTime:    activity.StartTime.Format(time.RFC3339),
 		EndTime:      activity.EndTime.Format(time.RFC3339),
-		Campus:       campus,
+		Campus:       utils.DecodeCampus(activity.Campus),
 		Location:     activity.Location,
 		Img:          activity.Img,
 	})
