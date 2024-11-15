@@ -6,6 +6,7 @@ import (
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/collegeController"
 	"4u-go/app/controllers/userController"
+	"4u-go/app/controllers/websiteController"
 	"4u-go/app/midwares"
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +34,7 @@ func Init(r *gin.Engine) {
 
 		activity := api.Group("/activity")
 		{
-			activity.GET("", activityController.GetActivityList)
+			activity.GET("", midwares.CheckLogin, activityController.GetActivityList)
 			activity.POST("", midwares.CheckAdmin, activityController.CreateActivity)
 			activity.PUT("", midwares.CheckAdmin, activityController.UpdateActivity)
 			activity.DELETE("", midwares.CheckAdmin, activityController.DeleteActivity)
@@ -41,7 +42,7 @@ func Init(r *gin.Engine) {
 
 		announcement := api.Group("/announcement")
 		{
-			announcement.GET("", announcementController.GetAnnouncementList)
+			announcement.GET("", midwares.CheckLogin, announcementController.GetAnnouncementList)
 			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
 			announcement.PUT("", midwares.CheckAdmin, announcementController.UpdateAnnouncement)
 			announcement.DELETE("", midwares.CheckAdmin, announcementController.DeleteAnnouncement)
@@ -49,10 +50,20 @@ func Init(r *gin.Engine) {
 
 		college := api.Group("/college")
 		{
+			college.GET("", collegeController.GetCollegeList)
 			college.POST("", midwares.CheckSuperAdmin, collegeController.CreateCollege)
 			college.PUT("", midwares.CheckSuperAdmin, collegeController.UpdateCollege)
 			college.DELETE("", midwares.CheckSuperAdmin, collegeController.DeleteCollege)
-			college.GET("", collegeController.GetCollegeList)
+		}
+
+		website := api.Group("/website")
+		{
+			website.GET("", websiteController.GetWebsiteList)
+			website.POST("", midwares.CheckAdmin, websiteController.CreateWebsite)
+			website.DELETE("", midwares.CheckAdmin, websiteController.DeleteWebsite)
+			website.PUT("", midwares.CheckAdmin, websiteController.UpdateWebsite)
+
+			website.GET("/admin", midwares.CheckAdmin, websiteController.GetEditableWebsites)
 		}
 	}
 }

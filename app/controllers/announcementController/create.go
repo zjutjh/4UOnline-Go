@@ -1,8 +1,6 @@
 package announcementController
 
 import (
-	"time"
-
 	"4u-go/app/apiException"
 	"4u-go/app/models"
 	"4u-go/app/services/announcementService"
@@ -25,10 +23,9 @@ func CreateAnnouncement(c *gin.Context) {
 	}
 
 	err = announcementService.SaveAnnouncement(models.Announcement{
-		Title:       data.Title,
-		Content:     data.Content,
-		PublishTime: time.Now(),
-		AuthorID:    c.GetUint("user_id"),
+		Title:    data.Title,
+		Content:  data.Content,
+		AuthorID: utils.GetUser(c).ID,
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

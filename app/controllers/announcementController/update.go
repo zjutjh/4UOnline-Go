@@ -36,9 +36,8 @@ func UpdateAnnouncement(c *gin.Context) {
 		return
 	}
 
-	user := c.GetUint("user_id")
-	adminType := c.GetUint("admin_type")
-	if announcement.AuthorID != user && adminType != models.SuperAdmin {
+	user := utils.GetUser(c)
+	if announcement.AuthorID != user.ID && user.Type != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
 	}

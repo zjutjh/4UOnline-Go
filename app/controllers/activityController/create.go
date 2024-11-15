@@ -51,8 +51,7 @@ func CreateActivity(c *gin.Context) {
 		Campus:       data.Campus,
 		Location:     data.Location,
 		Img:          data.Img,
-		AuthorID:     c.GetUint("user_id"),
-		PublishTime:  time.Now(),
+		AuthorID:     utils.GetUser(c).ID,
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

@@ -5,7 +5,6 @@ import (
 
 	"4u-go/app/apiException"
 	"4u-go/app/services/announcementService"
-	"4u-go/app/services/sessionService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -24,11 +23,7 @@ type announcementElement struct {
 
 // GetAnnouncementList 获取公告列表
 func GetAnnouncementList(c *gin.Context) {
-	user, err := sessionService.GetUserSession(c)
-	if err != nil {
-		apiException.AbortWithException(c, apiException.NotLogin, err)
-		return
-	}
+	user := utils.GetUser(c)
 
 	list, err := announcementService.GetAnnouncementList()
 	if err != nil {
@@ -42,7 +37,7 @@ func GetAnnouncementList(c *gin.Context) {
 			ID:          announcement.ID,
 			Title:       announcement.Title,
 			Content:     announcement.Content,
-			PublishTime: announcement.PublishTime.Format(time.RFC3339),
+			PublishTime: announcement.CreatedAt.Format(time.RFC3339),
 			Editable:    announcement.AuthorID == user.ID || user.Type == 4,
 		})
 	}

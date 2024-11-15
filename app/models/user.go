@@ -13,7 +13,7 @@ type User struct {
 	College      string    `json:"college"`        // 学院
 	Class        string    `json:"class"`          // 班级
 	PhoneNum     string    `json:"phone_num"`      // 手机号码
-	CreateTime   time.Time `json:"create_time"`    // 记录创建时间
+	CreatedAt    time.Time `json:"created_at"`     // 记录创建时间
 }
 
 // 用户类型常量

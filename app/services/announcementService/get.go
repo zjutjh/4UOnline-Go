@@ -14,7 +14,7 @@ func GetAnnouncementList() (announcements []models.Announcement, err error) {
 
 // GetAnnouncementById 获取指定ID的公告
 func GetAnnouncementById(id uint) (announcement models.Announcement, err error) {
-	database.DB.Where("id = ?", id).First(&announcement)
-	err = database.DB.Error
+	result := database.DB.Where("id = ?", id).First(&announcement)
+	err = result.Error
 	return announcement, err
 }

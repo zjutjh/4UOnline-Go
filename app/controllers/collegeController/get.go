@@ -20,5 +20,7 @@ func GetCollegeList(c *gin.Context) {
 		return
 	}
 
-	utils.JsonSuccessResponse(c, getCollegeResponse{collegeList})
+	utils.JsonSuccessResponse(c, getCollegeResponse{
+		CollegeList: collegeList,
+	})
 }
