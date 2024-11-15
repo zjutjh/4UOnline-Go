@@ -16,12 +16,12 @@ type getActivityListResponse struct {
 }
 
 type activityElement struct {
-	ID         uint    `json:"id"`
-	Title      string  `json:"title"`
-	Department string  `json:"department"`
-	StartTime  string  `json:"start_time"`
-	Campus     []uint8 `json:"campus"`
-	Img        string  `json:"img"`
+	ID         uint   `json:"id"`
+	Title      string `json:"title"`
+	Department string `json:"department"`
+	StartTime  string `json:"start_time"`
+	Campus     []uint `json:"campus"`
+	Img        string `json:"img"`
 }
 
 type getActivityData struct {
@@ -29,14 +29,14 @@ type getActivityData struct {
 }
 
 type getActivityResponse struct {
-	Title        string  `json:"title"`
-	Introduction string  `json:"introduction"`
-	Department   string  `json:"department"`
-	StartTime    string  `json:"start_time"`
-	EndTime      string  `json:"end_time"`
-	Campus       []uint8 `json:"campus"`
-	Location     string  `json:"location"`
-	Img          string  `json:"img"`
+	Title        string `json:"title"`
+	Introduction string `json:"introduction"`
+	Department   string `json:"department"`
+	StartTime    string `json:"start_time"`
+	EndTime      string `json:"end_time"`
+	Campus       []uint `json:"campus"`
+	Location     string `json:"location"`
+	Img          string `json:"img"`
 }
 
 // GetActivityList 获取校园活动列表
@@ -49,12 +49,16 @@ func GetActivityList(c *gin.Context) {
 
 	activityList := make([]activityElement, 0)
 	for _, activity := range list {
+		campus := make([]uint, 0)
+		for _, c := range activity.Campus {
+			campus = append(campus, uint(c))
+		}
 		activityList = append(activityList, activityElement{
 			ID:         activity.ID,
 			Title:      activity.Title,
 			Department: activity.Department,
 			StartTime:  activity.StartTime.Format(time.RFC3339),
-			Campus:     activity.Campus,
+			Campus:     campus,
 			Img:        activity.Img,
 		})
 	}
@@ -83,13 +87,17 @@ func GetActivity(c *gin.Context) {
 		return
 	}
 
+	campus := make([]uint, 0)
+	for _, c := range activity.Campus {
+		campus = append(campus, uint(c))
+	}
 	utils.JsonSuccessResponse(c, getActivityResponse{
 		Title:        activity.Title,
 		Introduction: activity.Introduction,
 		Department:   activity.Department,
 		StartTime:    activity.StartTime.Format(time.RFC3339),
 		EndTime:      activity.EndTime.Format(time.RFC3339),
-		Campus:       activity.Campus,
+		Campus:       campus,
 		Location:     activity.Location,
 		Img:          activity.Img,
 	})
