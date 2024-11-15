@@ -9,8 +9,9 @@ import (
 )
 
 type createAnnouncementData struct {
-	Title   string `json:"title" binding:"required"`
-	Content string `json:"content" binding:"required"`
+	Title      string `json:"title" binding:"required"`
+	Content    string `json:"content" binding:"required"`
+	Department string `json:"department" binding:"required"`
 }
 
 // CreateAnnouncement 创建一条公告通知
@@ -23,9 +24,10 @@ func CreateAnnouncement(c *gin.Context) {
 	}
 
 	err = announcementService.SaveAnnouncement(models.Announcement{
-		Title:    data.Title,
-		Content:  data.Content,
-		AuthorID: utils.GetUser(c).ID,
+		Title:      data.Title,
+		Content:    data.Content,
+		Department: data.Department,
+		AuthorID:   utils.GetUser(c).ID,
 	})
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)

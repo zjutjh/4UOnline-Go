@@ -43,7 +43,8 @@ func Init(r *gin.Engine) {
 
 		announcement := api.Group("/announcement")
 		{
-			announcement.GET("", midwares.CheckLogin, announcementController.GetAnnouncementList)
+			announcement.GET("/list", announcementController.GetAnnouncementList)
+			announcement.GET("", announcementController.GetAnnouncement)
 			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
 			announcement.PUT("", midwares.CheckAdmin, announcementController.UpdateAnnouncement)
 			announcement.DELETE("", midwares.CheckAdmin, announcementController.DeleteAnnouncement)
