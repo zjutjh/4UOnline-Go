@@ -22,33 +22,33 @@ func AuthByPassword(c *gin.Context) {
 	var postForm passwordLoginForm
 	err := c.ShouldBindJSON(&postForm)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
 	user, err := userService.GetUserByStudentID(postForm.StudentID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		utils.JsonErrorResponse(c, apiException.UserNotFound, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.UserNotFound, err)
 		return
 	}
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 
 	if err := userService.AuthenticateUser(user, postForm.Password); err != nil {
 		var apiErr *apiException.Error
 		if errors.As(err, &apiErr) {
-			utils.JsonErrorResponse(c, apiErr, utils.LevelInfo, err)
+			apiException.AbortWithException(c, apiErr, err)
 		} else {
-			utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+			apiException.AbortWithException(c, apiException.ServerError, err)
 		}
 		return
 	}
 
 	err = sessionService.SetUserSession(c, user)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, gin.H{
@@ -57,7 +57,7 @@ func AuthByPassword(c *gin.Context) {
 			"studentID":  user.StudentID,
 			"userType":   user.Type,
 			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreateTime,
+			"createTime": user.CreatedAt,
 		},
 	})
 }
@@ -70,7 +70,7 @@ type autoLoginForm struct {
 func AuthBySession(c *gin.Context) {
 	user, err := sessionService.UpdateUserSession(c)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, gin.H{
@@ -79,7 +79,7 @@ func AuthBySession(c *gin.Context) {
 			"studentID":  user.StudentID,
 			"userType":   user.Type,
 			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreateTime,
+			"createTime": user.CreatedAt,
 		},
 	})
 }
@@ -89,29 +89,28 @@ func WeChatLogin(c *gin.Context) {
 	var postForm autoLoginForm
 	err := c.ShouldBindJSON(&postForm)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ParamError, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
 
 	session, err := wechat.MiniProgram.GetAuth().Code2Session(postForm.Code)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.OpenIDError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.OpenIDError, err)
 		return
 	}
 
 	user, err := userService.GetUserByWechatOpenID(session.OpenID)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		utils.JsonErrorResponse(c, apiException.UserNotFound, utils.LevelInfo, err)
+		apiException.AbortWithException(c, apiException.UserNotFound, err)
 		return
 	} else if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 
 	err = sessionService.SetUserSession(c, user)
 	if err != nil {
-		utils.JsonErrorResponse(c, apiException.ServerError, utils.LevelError, err)
-
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 	utils.JsonSuccessResponse(c, gin.H{
@@ -120,7 +119,7 @@ func WeChatLogin(c *gin.Context) {
 			"studentID":  user.StudentID,
 			"userType":   user.Type,
 			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreateTime,
+			"createTime": user.CreatedAt,
 		},
 	})
 }

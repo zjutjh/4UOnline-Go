@@ -2,7 +2,6 @@ package userService
 
 import (
 	"errors"
-	"time"
 
 	"4u-go/app/apiException"
 	"4u-go/app/models"
@@ -25,9 +24,8 @@ func CreateStudentUser(studentID, password, idCardNumber, email string, usertype
 	}
 
 	user := &models.User{
-		Type:       models.UserType(usertype),
-		StudentID:  studentID,
-		CreateTime: time.Now(),
+		Type:      usertype,
+		StudentID: studentID,
 	}
 
 	EncryptUserKeyInfo(user)

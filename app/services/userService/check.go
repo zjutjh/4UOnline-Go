@@ -1,12 +1,12 @@
 package userService
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
+	"errors"
 
 	"4u-go/app/apiException"
 	"4u-go/app/models"
 	"4u-go/app/services/userCenterService"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // AuthenticateUser 验证用户凭证
@@ -24,15 +24,9 @@ func CheckLogin(username, password string) error {
 
 // CheckLocalLogin 本地登录
 func CheckLocalLogin(user *models.User, password string) error {
-	h := sha256.New()
-	_, err := h.Write([]byte(password))
-	if err != nil {
-		return err
-	}
-	pass := hex.EncodeToString(h.Sum(nil))
-
-	if user.Password != pass {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		return apiException.NoThatPasswordOrWrong
 	}
-	return nil
+	return err
 }

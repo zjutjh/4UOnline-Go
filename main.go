@@ -3,6 +3,7 @@ package main
 import (
 	"4u-go/app/midwares"
 	"4u-go/app/utils/log"
+	"4u-go/config/config"
 	"4u-go/config/database"
 	"4u-go/config/router"
 	"4u-go/config/session"
@@ -13,6 +14,10 @@ import (
 )
 
 func main() {
+	// 如果配置文件中开启了调试模式
+	if !config.Config.GetBool("server.debug") {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(midwares.ErrHandler())
@@ -30,7 +35,7 @@ func main() {
 	}
 	router.Init(r)
 
-	err := r.Run()
+	err := r.Run(":" + config.Config.GetString("server.port"))
 	if err != nil {
 		zap.L().Fatal(err.Error())
 	}
