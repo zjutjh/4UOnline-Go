@@ -7,7 +7,7 @@ import (
 
 // GetAnnouncementList 获取公告通知列表
 func GetAnnouncementList() (announcements []models.Announcement, err error) {
-	result := database.DB.Order("publish_time desc").Find(&announcements)
+	result := database.DB.Order("created_at desc").Find(&announcements)
 	err = result.Error
 	return announcements, err
 }

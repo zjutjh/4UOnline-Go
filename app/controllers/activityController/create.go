@@ -16,7 +16,7 @@ type createActivityData struct {
 	Department   string `json:"department" binding:"required"`
 	StartTime    string `json:"start_time" binding:"required"`
 	EndTime      string `json:"end_time" binding:"required"`
-	Campus       uint8  `json:"campus" binding:"required"`
+	Campus       []uint `json:"campus" binding:"required"`
 	Location     string `json:"location" binding:"required"`
 	Img          string `json:"img"`
 }
@@ -48,7 +48,7 @@ func CreateActivity(c *gin.Context) {
 		Department:   data.Department,
 		StartTime:    startTime,
 		EndTime:      endTime,
-		Campus:       data.Campus,
+		Campus:       utils.EncodeCampus(data.Campus),
 		Location:     data.Location,
 		Img:          data.Img,
 		AuthorID:     utils.GetUser(c).ID,

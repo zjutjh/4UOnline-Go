@@ -19,7 +19,7 @@ type updateActivityData struct {
 	Department   string `json:"department" binding:"required"`
 	StartTime    string `json:"start_time" binding:"required"`
 	EndTime      string `json:"end_time" binding:"required"`
-	Campus       uint8  `json:"campus" binding:"required"`
+	Campus       []uint `json:"campus" binding:"required"`
 	Location     string `json:"location" binding:"required"`
 	Img          string `json:"img"`
 }
@@ -67,7 +67,7 @@ func UpdateActivity(c *gin.Context) {
 		activity.Department = data.Department
 		activity.StartTime = startTime
 		activity.EndTime = endTime
-		activity.Campus = data.Campus
+		activity.Campus = utils.EncodeCampus(data.Campus)
 		activity.Location = data.Location
 		activity.Img = data.Img
 	}

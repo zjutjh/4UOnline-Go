@@ -12,9 +12,10 @@ import (
 )
 
 type updateAnnouncementData struct {
-	ID      uint   `json:"id" binding:"required"`
-	Title   string `json:"title" binding:"required"`
-	Content string `json:"content" binding:"required"`
+	ID         uint   `json:"id" binding:"required"`
+	Title      string `json:"title" binding:"required"`
+	Content    string `json:"content" binding:"required"`
+	Department string `json:"department" binding:"required"`
 }
 
 // UpdateAnnouncement 创建一条公告通知
@@ -45,6 +46,7 @@ func UpdateAnnouncement(c *gin.Context) {
 	{ // 更新公告信息
 		announcement.Title = data.Title
 		announcement.Content = data.Content
+		announcement.Department = data.Department
 	}
 
 	err = announcementService.SaveAnnouncement(announcement)
