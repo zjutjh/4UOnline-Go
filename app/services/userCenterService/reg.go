@@ -16,13 +16,14 @@ func RegWithoutVerify(stuId string, pass string, iid string, email string, userT
 	}
 	userUrl.RawQuery = params.Encode()
 	urlPath := userUrl.String()
-	regMap := make(map[string]any)
-	regMap["stu_id"] = stuId
-	regMap["password"] = pass
-	regMap["iid"] = iid
-	regMap["email"] = email
-	regMap["type"] = userType
-	regMap["bound_system"] = 1
+	regMap := map[string]any{
+		"stu_id":       stuId,
+		"password":     pass,
+		"iid":          iid,
+		"email":        email,
+		"type":         userType,
+		"bound_system": 1,
+	}
 	resp, err := FetchHandleOfPost(regMap, userCenterApi.UserCenterApi(urlPath))
 	if err != nil {
 		return err

@@ -16,10 +16,11 @@ func Login(stuId string, pass string) error {
 	}
 	loginUrl.RawQuery = params.Encode()
 	urlPath := loginUrl.String()
-	regMap := make(map[string]any)
-	regMap["stu_id"] = stuId
-	regMap["password"] = pass
-	regMap["bound_system"] = 1
+	regMap := map[string]any{
+		"stu_id":       stuId,
+		"password":     pass,
+		"bound_system": 1,
+	}
 	resp, err := FetchHandleOfPost(regMap, userCenterApi.UserCenterApi(urlPath))
 	if err != nil {
 		return apiException.RequestError
