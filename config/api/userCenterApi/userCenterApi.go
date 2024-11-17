@@ -5,17 +5,14 @@ import "4u-go/config/config"
 // UserCenterHost 用户中心地址
 var UserCenterHost = config.Config.GetString("user.host")
 
-// UserCenterApi 用户中心接口
-type UserCenterApi string
-
 // 用户中心接口
 const (
-	UCRegWithoutVerify UserCenterApi = "api/activation/notVerify"
-	UCReg              UserCenterApi = "api/activation"
-	VerifyEmail        UserCenterApi = "api/verify/email"
-	ReSendEmail        UserCenterApi = "api/email"
-	Auth               UserCenterApi = "api/auth"
-	RePass             UserCenterApi = "api/changePwd" // nolint:gosec
-	RePassWithoutEmail UserCenterApi = "api/repass"
-	DelAccount         UserCenterApi = "api/del"
+	UCRegWithoutVerify string = "api/activation/notVerify"
+	UCReg              string = "api/activation"
+	VerifyEmail        string = "api/verify/email"
+	ReSendEmail        string = "api/email"
+	Auth               string = "api/auth"
+	RePass             string = "api/changePwd" // nolint:gosec
+	RePassWithoutEmail string = "api/repass"
+	DelAccount         string = "api/del"
 )
