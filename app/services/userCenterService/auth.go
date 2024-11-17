@@ -10,7 +10,7 @@ import (
 // Login 用户中心登录
 func Login(stuId string, pass string) error {
 	params := url.Values{}
-	loginUrl, err := url.Parse(string(userCenterApi.Auth))
+	loginUrl, err := url.Parse(userCenterApi.Auth)
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func Login(stuId string, pass string) error {
 		"password":     pass,
 		"bound_system": 1,
 	}
-	resp, err := FetchHandleOfPost(regMap, userCenterApi.UserCenterApi(urlPath))
+	resp, err := FetchHandleOfPost(regMap, urlPath)
 	if err != nil {
 		return apiException.RequestError
 	}
