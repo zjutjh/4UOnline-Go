@@ -21,7 +21,7 @@ func Init() error {
 	name := config.Config.GetString("database.name") // 数据库名称
 
 	// 构建数据源名称 (DSN)
-	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8mb4&parseTime=True&loc=Local",
 		user, pass, host, port, name)
 
 	// 使用 GORM 打开数据库连接

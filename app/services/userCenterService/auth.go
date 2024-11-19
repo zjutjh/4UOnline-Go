@@ -9,12 +9,10 @@ import (
 
 // Login 用户中心登录
 func Login(stuId string, pass string) error {
-	params := url.Values{}
 	loginUrl, err := url.Parse(userCenterApi.Auth)
 	if err != nil {
 		return err
 	}
-	loginUrl.RawQuery = params.Encode()
 	urlPath := loginUrl.String()
 	regMap := map[string]any{
 		"stu_id":       stuId,

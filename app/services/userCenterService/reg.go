@@ -9,12 +9,10 @@ import (
 
 // RegWithoutVerify 用户中心不验证激活用户
 func RegWithoutVerify(stuId string, pass string, iid string, email string, userType uint) error {
-	params := url.Values{}
 	userUrl, err := url.Parse(userCenterApi.UCRegWithoutVerify)
 	if err != nil {
 		return err
 	}
-	userUrl.RawQuery = params.Encode()
 	urlPath := userUrl.String()
 	regMap := map[string]any{
 		"stu_id":       stuId,

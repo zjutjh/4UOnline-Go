@@ -1,6 +1,6 @@
 module 4u-go
 
-go 1.23.2
+go 1.22.9
 
 require (
 	github.com/gin-contrib/cors v1.7.2
@@ -39,7 +39,7 @@ require (
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
-	github.com/gorilla/sessions v1.4.0 // indirect
+	github.com/gorilla/sessions v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
