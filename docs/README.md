@@ -50,7 +50,7 @@ go run main.go
 go run main.go
 ```
 5. 每次提交commit前，先运行以下代码检查后端
-使用[golangci-lint](https://golangci-lint.run/)(v1.16.0)检查代码(其他版本会有其他报错，先以这个版本为主)
+使用[golangci-lint](https://golangci-lint.run/)(v1.62.0)检查代码
 ```
 golangci-lint run --config .golangci.yml
 ```

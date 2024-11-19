@@ -28,5 +28,5 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6  # 使用 golangci-lint-action
         with:
-          version: v1.61.0  # 指定 golangci-lint 版本
+          version: v1.62.0  # 指定 golangci-lint 版本
           args: '--config .golangci.yml'  # 使用指定的配置文件
