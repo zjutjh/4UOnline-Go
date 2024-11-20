@@ -1,6 +1,9 @@
 package main
 
 import (
+	"4u-go/config/objectStorage"
+	"go.uber.org/zap"
+
 	"4u-go/app/midwares"
 	"4u-go/app/utils/log"
 	"4u-go/config/config"
@@ -10,7 +13,6 @@ import (
 	"4u-go/config/wechat"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 func main() {
@@ -26,6 +28,9 @@ func main() {
 	log.ZapInit()
 	if err := database.Init(); err != nil {
 		zap.L().Fatal(err.Error()) // 在 main 函数中处理错误并终止程序
+	}
+	if err := objectStorage.Init(); err != nil {
+		zap.L().Fatal(err.Error())
 	}
 	if err := session.Init(r); err != nil {
 		zap.L().Fatal(err.Error())
