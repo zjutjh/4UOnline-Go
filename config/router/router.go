@@ -5,6 +5,7 @@ import (
 	"4u-go/app/controllers/adminController"
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/collegeController"
+	"4u-go/app/controllers/objectController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/controllers/websiteController"
 	"4u-go/app/midwares"
@@ -25,6 +26,8 @@ func Init(r *gin.Engine) {
 			user.POST("/login/wechat", userController.WeChatLogin)
 			user.POST("/login", userController.AuthByPassword)
 			user.POST("/login/session", userController.AuthBySession)
+
+			user.POST("/attachment", objectController.UploadFile)
 		}
 
 		admin := api.Group("/admin")
