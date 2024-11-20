@@ -28,24 +28,27 @@ linters-settings:
     # 默认失败置信度
     confidence: 0.1
     rules:
-      - name: var-naming    # 变量命名规则
+      - name: var-naming            # 变量命名规则
         severity: warning
         disabled: true
-      - name: line-length-limit   # 行长度限制
+      - name: line-length-limit     # 行长度限制
         severity: warning
         disabled: false
         exclude: [ "" ]
         arguments: [ 120 ]
-      - name: add-constant       #使用命名常量而非魔法数字
+      - name: add-constant          # 使用命名常量而非魔法数字
         severity: warning
         disabled: true
-      - name: package-comments    #包注释
+      - name: package-comments      # 包注释
         severity: warning
         disabled: true
-      - name: import-alias-naming   #导入别名命名规则
+      - name: import-alias-naming   # 导入别名命名规则
         severity: warning
         disabled: true
-      - name: get-return            #使用get必须有返回值
+      - name: get-return            # 使用get必须有返回值
+        severity: warning
+        disabled: true
+      - name: max-public-structs    # 最大公共结构体数目
         severity: warning
         disabled: true
       - name: cognitive-complexity

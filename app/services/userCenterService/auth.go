@@ -9,18 +9,17 @@ import (
 
 // Login 用户中心登录
 func Login(stuId string, pass string) error {
-	params := url.Values{}
-	loginUrl, err := url.Parse(string(userCenterApi.Auth))
+	loginUrl, err := url.Parse(userCenterApi.Auth)
 	if err != nil {
 		return err
 	}
-	loginUrl.RawQuery = params.Encode()
 	urlPath := loginUrl.String()
-	regMap := make(map[string]any)
-	regMap["stu_id"] = stuId
-	regMap["password"] = pass
-	regMap["bound_system"] = 1
-	resp, err := FetchHandleOfPost(regMap, userCenterApi.UserCenterApi(urlPath))
+	regMap := map[string]any{
+		"stu_id":       stuId,
+		"password":     pass,
+		"bound_system": 1,
+	}
+	resp, err := FetchHandleOfPost(regMap, urlPath)
 	if err != nil {
 		return apiException.RequestError
 	}

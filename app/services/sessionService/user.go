@@ -33,11 +33,11 @@ func UpdateUserSession(c *gin.Context) (*models.User, error) {
 // GetUserSession 检查用户session缓存
 func GetUserSession(c *gin.Context) (*models.User, error) {
 	webSession := sessions.Default(c)
-	id := webSession.Get("id")
-	if id == nil {
+	id, ok := webSession.Get("id").(uint)
+	if !ok {
 		return nil, errors.New("")
 	}
-	user, err := userService.GetUserByID(id.(uint))
+	user, err := userService.GetUserByID(id)
 	if err != nil {
 		if err := ClearUserSession(c); err != nil {
 			return nil, err
