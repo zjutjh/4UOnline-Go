@@ -35,7 +35,7 @@ var (
 	GetFileInfoError      = NewError(200515, log.LevelInfo, "获取文件信息失败")
 	UploadFileError       = NewError(200516, log.LevelInfo, "上传文件失败")
 	SetFileNameError      = NewError(200517, log.LevelInfo, "文件重命名失败")
-	FileSizeExceedError   = NewError(200518, log.LevelInfo, "文件大小超过100MB")
+	FileSizeExceedError   = NewError(200518, log.LevelInfo, "文件大小超限")
 
 	NotInit  = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
 	NotFound = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
