@@ -50,6 +50,10 @@ func UploadFile(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
+	if errors.Is(err, objectService.ErrNotImage) {
+		apiException.AbortWithException(c, apiException.FileNotImageError, err)
+		return
+	}
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return

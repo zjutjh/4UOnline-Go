@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"mime/multipart"
+	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -17,6 +18,9 @@ var (
 
 	// ErrSizeExceeded 文件大小超限
 	ErrSizeExceeded = errors.New("file size exceeded")
+
+	// ErrNotImage 使用 image 类型上传非图片的文件
+	ErrNotImage = errors.New("file isn't a image")
 )
 
 var uploadTypeLimits = map[string]int64{
@@ -43,6 +47,11 @@ func GetFileInfo(
 	mimeType, mimeExt, err := getFileTypeAndExt(file)
 	if err != nil {
 		return "", "", err
+	}
+
+	// 检查是否为图像类型
+	if uploadType == "public/image" && !strings.HasPrefix(mimeType, "image") {
+		return "", "", ErrNotImage
 	}
 
 	return mimeType, mimeExt, nil
