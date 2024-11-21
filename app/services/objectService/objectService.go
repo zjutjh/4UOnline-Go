@@ -48,8 +48,8 @@ func GetFileInfo(
 	return mimeType, mimeExt, nil
 }
 
-// GetObjectKey 通过 UUID 作为文件名并返回 ObjectKey
-func GetObjectKey(uploadType string, fileExt string) string {
+// GenerateObjectKey 通过 UUID 作为文件名并生成 ObjectKey
+func GenerateObjectKey(uploadType string, fileExt string) string {
 	return fmt.Sprintf("%s/%d/%s%s", uploadType, time.Now().Year(), uuid.NewV1().String(), fileExt)
 }
 

@@ -61,7 +61,7 @@ func UploadFile(c *gin.Context) {
 	}
 
 	// 上传文件
-	objectKey := objectService.GetObjectKey(uploadType, fileExt)
+	objectKey := objectService.GenerateObjectKey(uploadType, fileExt)
 	objectUrl, err := objectService.PutObject(objectKey, file, fileHeader.Size, contentType)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.UploadFileError, err)
