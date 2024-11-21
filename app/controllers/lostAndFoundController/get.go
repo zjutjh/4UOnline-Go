@@ -84,3 +84,28 @@ func GetLostAndFoundContact(c *gin.Context) {
 
 	utils.JsonSuccessResponse(c, contact)
 }
+
+type latestLostAndFoundResponse struct {
+	Type         bool   `json:"type"`
+	Imgs         string `json:"imgs"`
+	Name         string `json:"name"`
+	Place        string `json:"place"`
+	Introduction string `json:"introduction"`
+}
+
+// GetLatestLostAndFound 获取最新失物招领
+func GetLatestLostAndFound(c *gin.Context) {
+	record, err := lostAndFoundService.GetLatestLostAndFound()
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ServerError, err)
+		return
+	}
+
+	utils.JsonSuccessResponse(c, latestLostAndFoundResponse{
+		Type:         record.Type,
+		Imgs:         record.Imgs,
+		Name:         record.Name,
+		Place:        record.Place,
+		Introduction: record.Introduction,
+	})
+}
