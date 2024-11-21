@@ -50,6 +50,10 @@ func UploadFile(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
+	if errors.Is(err, objectService.ErrNotImage) {
+		apiException.AbortWithException(c, apiException.FileNotImageError, err)
+		return
+	}
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
@@ -61,7 +65,7 @@ func UploadFile(c *gin.Context) {
 	}
 
 	// 上传文件
-	objectKey := objectService.GetObjectKey(uploadType, fileExt)
+	objectKey := objectService.GenerateObjectKey(uploadType, fileExt)
 	objectUrl, err := objectService.PutObject(objectKey, file, fileHeader.Size, contentType)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.UploadFileError, err)

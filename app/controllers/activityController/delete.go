@@ -6,6 +6,7 @@ import (
 	"4u-go/app/apiException"
 	"4u-go/app/models"
 	"4u-go/app/services/activityService"
+	"4u-go/app/services/objectService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -39,6 +40,16 @@ func DeleteActivity(c *gin.Context) {
 	if activity.AuthorID != user.ID && user.Type != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
+	}
+
+	// 删除活动对应的图片
+	objectKey, ok := objectService.GetObjectKeyFromUrl(activity.Img)
+	if ok {
+		err = objectService.DeleteObject(objectKey)
+		if err != nil {
+			apiException.AbortWithException(c, apiException.ServerError, err)
+			return
+		}
 	}
 
 	err = activityService.DeleteActivityById(data.ID)

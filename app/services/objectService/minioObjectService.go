@@ -28,10 +28,14 @@ func PutTemporaryObject(objectKey string, reader io.Reader, size int64, contentT
 	return PutObject((*ms).TempDir+objectKey, reader, size, contentType)
 }
 
-// DeleteObjectByUrl 从 Url 中获取 objectKey 并删除对应对象
-func DeleteObjectByUrl(fullUrl string) error {
-	objectKey := strings.TrimPrefix(fullUrl, (*ms).Domain+(*ms).Bucket+"/")
-	return DeleteObject(objectKey)
+// GetObjectKeyFromUrl 从 Url 中提取 ObjectKey
+// 若该 Url 不是来自我们的 Minio, 则 ok 为 false
+func GetObjectKeyFromUrl(fullUrl string) (objectKey string, ok bool) {
+	objectKey = strings.TrimPrefix(fullUrl, (*ms).Domain+(*ms).Bucket+"/")
+	if objectKey == fullUrl {
+		return "", false
+	}
+	return objectKey, true
 }
 
 // DeleteObject 用于删除相应对象

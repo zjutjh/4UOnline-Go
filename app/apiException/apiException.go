@@ -34,6 +34,7 @@ var (
 	AdminAlreadyExisted   = NewError(200513, log.LevelInfo, "管理员账号已存在")
 	UploadFileError       = NewError(200514, log.LevelError, "上传文件失败")
 	FileSizeExceedError   = NewError(200515, log.LevelInfo, "文件大小超限")
+	FileNotImageError     = NewError(200516, log.LevelInfo, "上传的文件不是图片")
 
 	NotInit  = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
 	NotFound = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
