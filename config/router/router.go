@@ -5,6 +5,7 @@ import (
 	"4u-go/app/controllers/adminController"
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/collegeController"
+	"4u-go/app/controllers/lostAndFoundController"
 	"4u-go/app/controllers/objectController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/controllers/websiteController"
@@ -69,6 +70,11 @@ func Init(r *gin.Engine) {
 			website.PUT("", midwares.CheckAdmin, websiteController.UpdateWebsite)
 
 			website.GET("/admin", midwares.CheckAdmin, websiteController.GetEditableWebsites)
+		}
+
+		lostAndFound := api.Group("/lost-and-found")
+		{
+			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
 		}
 	}
 }
