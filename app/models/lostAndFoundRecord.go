@@ -15,7 +15,7 @@ type LostAndFoundRecord struct {
 	Imgs         string    `json:"imgs"`                              // 物品图片，多个图片以逗号分隔
 	Contact      string    `json:"contact"`                           // 联系方式
 	CreatedAt    time.Time `json:"created_at" gorm:"type:timestamp;"` // 发布时间
-	IsProcessed  uint8     `json:"is_processed"`                      // 是否已处理 0-已取消 1-已处理 2-待处理
+	IsProcessed  uint8     `json:"is_processed"`                      // 是否完成 0-已取消 1-已完成 2-进行中
 	Publisher    string    `json:"-"`                                 // 发布者
 	IsApproved   uint8     `json:"-"`                                 // 是否审核通过 0-未通过 1-已通过 2-待审核
 }
