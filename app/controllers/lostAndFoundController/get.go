@@ -109,3 +109,54 @@ func GetLatestLostAndFound(c *gin.Context) {
 		Introduction: record.Introduction,
 	})
 }
+
+type getLostAndFoundStatusData struct {
+	IsProcessed uint8 `json:"is_processed"` // 是否已处理 0-已取消 1-已处理 2-待处理
+}
+type getLostAndFoundStatusResponse struct {
+	List []lostAndFoundStatusElement `json:"list"`
+}
+type lostAndFoundStatusElement struct {
+	ID           uint   `json:"id"`
+	Type         bool   `json:"type"`
+	Imgs         string `json:"imgs"`
+	Name         string `json:"name"`
+	Kind         uint8  `json:"kind"`
+	Place        string `json:"place"`
+	Time         string `json:"time"`
+	Introduction string `json:"introduction"`
+}
+
+// GetUserLostAndFoundStatus 查看发布失物招领信息后的审核状态
+func GetUserLostAndFoundStatus(c *gin.Context) {
+	var data getLostAndFoundStatusData
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ParamError, err)
+		return
+	}
+
+	list, err := lostAndFoundService.GetUserLostAndFoundStatus(utils.GetUser(c).StudentID, data.IsProcessed)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ServerError, err)
+		return
+	}
+
+	lostAndFoundList := make([]lostAndFoundStatusElement, 0)
+	for _, record := range list {
+		lostAndFoundList = append(lostAndFoundList, lostAndFoundStatusElement{
+			ID:           record.ID,
+			Type:         record.Type,
+			Imgs:         record.Imgs,
+			Name:         record.Name,
+			Kind:         record.Kind,
+			Place:        record.Place,
+			Time:         record.Time,
+			Introduction: record.Introduction,
+		})
+	}
+
+	utils.JsonSuccessResponse(c, getLostAndFoundStatusResponse{
+		List: lostAndFoundList,
+	})
+}

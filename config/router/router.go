@@ -81,6 +81,7 @@ func Init(r *gin.Engine) {
 			lostAndFound.GET("/list", lostAndFoundController.GetLostAndFoundList)
 			lostAndFound.GET("", midwares.CheckLogin, lostAndFoundController.GetLostAndFoundContact)
 			lostAndFound.GET("/latest", lostAndFoundController.GetLatestLostAndFound)
+			lostAndFound.GET("/user", midwares.CheckLogin, lostAndFoundController.GetUserLostAndFoundStatus)
 		}
 	}
 }

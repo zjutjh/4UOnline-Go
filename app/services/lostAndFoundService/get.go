@@ -49,3 +49,15 @@ func GetLatestLostAndFound() (record models.LostAndFoundRecord, err error) {
 	err = result.Error
 	return record, err
 }
+
+// GetUserLostAndFoundStatus 查看发布失物招领信息后的审核状态
+func GetUserLostAndFoundStatus(publisher string, isProcessed uint8) (records []models.LostAndFoundRecord, err error) {
+	if isProcessed != 1 {
+		result := database.DB.Where("publisher = ? AND is_processed = ?", publisher, isProcessed).Order("created_at desc").Find(&records)
+		err = result.Error
+		return records, err
+	}
+	result := database.DB.Where("publisher = ? AND is_approved = ?", publisher, isProcessed).Order("created_at desc").Find(&records)
+	err = result.Error
+	return records, err
+}
