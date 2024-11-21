@@ -75,6 +75,7 @@ func Init(r *gin.Engine) {
 		lostAndFound := api.Group("/lost-and-found")
 		{
 			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
+			lostAndFound.DELETE("", midwares.CheckLogin, lostAndFoundController.DeleteLostAndFound)
 		}
 	}
 }
