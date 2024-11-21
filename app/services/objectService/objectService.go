@@ -1,16 +1,14 @@
 package objectService
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"mime/multipart"
-	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/gabriel-vasile/mimetype"
+	uuid "github.com/satori/go.uuid"
 )
 
 var (
@@ -50,33 +48,9 @@ func GetFileInfo(
 	return mimeType, mimeExt, nil
 }
 
-// SetFileName 将文件重命名
-func SetFileName(uploadType string, fileExt string) (string, error) {
-	now := time.Now()
-	timestamp := now.UnixNano() / 1e6
-
-	randomBytes := make([]byte, 16)
-	if _, err := rand.Read(randomBytes); err != nil {
-		return "", errors.New("failed to generate random bytes")
-	}
-
-	randomString := hex.EncodeToString(randomBytes)
-	randomPath := fmt.Sprintf("%d%s", timestamp, randomString)
-	if randomPath == "" {
-		return "", errors.New("failed to generate random path")
-	}
-
-	ossSavePath := fmt.Sprintf("%s/%d/%s%s", uploadType, now.Year(), randomPath, fileExt)
-	if ossSavePath == "" {
-		return "", errors.New("failed to generate ossSavePath")
-	}
-
-	return ossSavePath, nil
-}
-
-// RemoveDomain 去除 URL 的域名部分
-func RemoveDomain(fullUrl string, domain string, bucket string) string {
-	return strings.TrimPrefix(strings.TrimPrefix(fullUrl, domain), bucket+"/")
+// GetObjectKey 通过 UUID 作为文件名并返回 ObjectKey
+func GetObjectKey(uploadType string, fileExt string) string {
+	return fmt.Sprintf("%s/%d/%s%s", uploadType, time.Now().Year(), uuid.NewV1().String(), fileExt)
 }
 
 // checkFileSize 检查文件大小
