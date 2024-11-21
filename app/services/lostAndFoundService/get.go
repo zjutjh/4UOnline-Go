@@ -45,7 +45,7 @@ func GetLostAndFoundContact(id uint, studentID string) (contact string, err erro
 
 // GetLatestLostAndFound 获取最新失物招领
 func GetLatestLostAndFound() (record models.LostAndFoundRecord, err error) {
-	result := database.DB.Order("created_at desc").First(&record)
+	result := database.DB.Where("is_processed = 2 AND is_approved = 1").Order("created_at desc").First(&record)
 	err = result.Error
 	return record, err
 }
