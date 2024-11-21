@@ -1,9 +1,9 @@
 package objectController
 
 import (
+	"errors"
 	"io"
 	"mime/multipart"
-	"strings"
 
 	"4u-go/app/apiException"
 	"4u-go/app/services/objectService"
@@ -42,11 +42,15 @@ func UploadFile(c *gin.Context) {
 
 	// 获取文件信息
 	contentType, fileExt, err := objectService.GetFileInfo(file, fileHeader, uploadType)
+	if errors.Is(err, objectService.ErrSizeExceeded) {
+		apiException.AbortWithException(c, apiException.FileSizeExceedError, err)
+		return
+	}
+	if errors.Is(err, objectService.ErrUnsupportedUploadType) {
+		apiException.AbortWithException(c, apiException.ParamError, err)
+		return
+	}
 	if err != nil {
-		if strings.Contains(err.Error(), "file size exceeds the maximum limit of 100MB") {
-			apiException.AbortWithException(c, apiException.FileSizeExceedError, err)
-			return
-		}
 		apiException.AbortWithException(c, apiException.GetFileInfoError, err)
 		return
 	}
