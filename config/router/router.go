@@ -76,6 +76,7 @@ func Init(r *gin.Engine) {
 		{
 			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
 			lostAndFound.DELETE("", midwares.CheckLogin, lostAndFoundController.DeleteLostAndFound)
+			lostAndFound.PUT("", midwares.CheckAdmin, lostAndFoundController.ReviewLostAndFound)
 		}
 	}
 }
