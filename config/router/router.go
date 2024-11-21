@@ -28,6 +28,8 @@ func Init(r *gin.Engine) {
 			user.POST("/login/session", userController.AuthBySession)
 
 			user.POST("/attachment", objectController.UploadFile)
+
+			user.POST("/repass", userController.ChangePassword)
 		}
 
 		admin := api.Group("/admin")
