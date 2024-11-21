@@ -12,6 +12,7 @@ require (
 	github.com/go-resty/resty/v2 v2.16.0
 	github.com/minio/minio-go/v7 v7.0.80
 	github.com/pkg/errors v0.9.1
+	github.com/satori/go.uuid v1.2.0
 	github.com/silenceper/wechat/v2 v2.1.7
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
