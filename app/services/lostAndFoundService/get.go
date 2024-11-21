@@ -15,11 +15,11 @@ func GetLostAndFoundById(id uint) (record models.LostAndFoundRecord, err error) 
 // GetLostAndFoundList 获取失物招领列表
 func GetLostAndFoundList(Type bool, campus, kind uint8) (records []models.LostAndFoundRecord, err error) {
 	if kind == 0 {
-		result := database.DB.Where("type = ? AND campus = ?", Type, campus).Order("created_at desc").Find(&records)
+		result := database.DB.Where("type = ? AND campus = ? AND is_processed = 2 AND is_approved = 1", Type, campus).Order("created_at desc").Find(&records)
 		err = result.Error
 		return records, err
 	} else {
-		result := database.DB.Where("type = ? AND campus = ? AND kind = ?", Type, campus, kind).Order("created_at desc").Find(&records)
+		result := database.DB.Where("type = ? AND campus = ? AND kind = ? AND is_processed = 2 AND is_approved = 1", Type, campus, kind).Order("created_at desc").Find(&records)
 		err = result.Error
 		return records, err
 	}
