@@ -50,14 +50,20 @@ func GetLatestLostAndFound() (record models.LostAndFoundRecord, err error) {
 	return record, err
 }
 
-// GetUserLostAndFoundStatus 查看发布失物招领信息后的审核状态
-func GetUserLostAndFoundStatus(publisher string, isProcessed uint8) (records []models.LostAndFoundRecord, err error) {
-	if isProcessed != 1 {
-		result := database.DB.Where("publisher = ? AND is_processed = ?", publisher, isProcessed).Order("created_at desc").Find(&records)
+// GetUserLostAndFoundStatus 查看失物招领信息的状态
+func GetUserLostAndFoundStatus(publisher string, status uint8) (records []models.LostAndFoundRecord, err error) {
+	if status == 0 {
+		result := database.DB.Where("publisher = ? AND is_processed = ?", publisher, 0).Order("created_at desc").Find(&records)
 		err = result.Error
 		return records, err
+	} else if status == 1 {
+		result := database.DB.Where("publisher = ? AND (is_approved = 0 OR is_approved = 1)", publisher).Order("created_at desc").Find(&records)
+		err = result.Error
+		return records, err
+	} else {
+		result := database.DB.Where("publisher = ? AND is_approved = ?", publisher, 2).Order("created_at desc").Find(&records)
+		err = result.Error
+		return records, err
+
 	}
-	result := database.DB.Where("publisher = ? AND is_approved = ?", publisher, isProcessed).Order("created_at desc").Find(&records)
-	err = result.Error
-	return records, err
 }

@@ -111,7 +111,7 @@ func GetLatestLostAndFound(c *gin.Context) {
 }
 
 type getLostAndFoundStatusData struct {
-	IsProcessed uint8 `json:"is_processed"` // 是否已处理 0-已取消 1-已处理 2-待处理
+	Status uint8 `json:"status"` // 状态 0-已撤回 1-已审核 2-审核中
 }
 type getLostAndFoundStatusResponse struct {
 	List []lostAndFoundStatusElement `json:"list"`
@@ -125,9 +125,10 @@ type lostAndFoundStatusElement struct {
 	Place        string `json:"place"`
 	Time         string `json:"time"`
 	Introduction string `json:"introduction"`
+	IsApproved   uint8  `json:"is_approved"`
 }
 
-// GetUserLostAndFoundStatus 查看发布失物招领信息后的审核状态
+// GetUserLostAndFoundStatus 查看失物招领信息的状态
 func GetUserLostAndFoundStatus(c *gin.Context) {
 	var data getLostAndFoundStatusData
 	err := c.ShouldBindJSON(&data)
@@ -136,7 +137,7 @@ func GetUserLostAndFoundStatus(c *gin.Context) {
 		return
 	}
 
-	list, err := lostAndFoundService.GetUserLostAndFoundStatus(utils.GetUser(c).StudentID, data.IsProcessed)
+	list, err := lostAndFoundService.GetUserLostAndFoundStatus(utils.GetUser(c).StudentID, data.Status)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
@@ -153,6 +154,7 @@ func GetUserLostAndFoundStatus(c *gin.Context) {
 			Place:        record.Place,
 			Time:         record.Time,
 			Introduction: record.Introduction,
+			IsApproved:   record.IsApproved,
 		})
 	}
 
