@@ -1,10 +1,13 @@
 package lostAndFoundController
 
 import (
+	"errors"
+
 	"4u-go/app/apiException"
 	"4u-go/app/services/lostAndFoundService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type getLostAndFoundListData struct {
@@ -54,4 +57,30 @@ func GetLostAndFoundList(c *gin.Context) {
 	utils.JsonSuccessResponse(c, getLostAndFoundListResponse{
 		LostAndFoundList: lostAndFoundList,
 	})
+}
+
+type getLostAndFoundContentData struct {
+	ID uint `json:"id" binding:"required"`
+}
+
+// GetLostAndFoundContact 获取失物招领联系方式
+func GetLostAndFoundContact(c *gin.Context) {
+	var data getLostAndFoundContentData
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ParamError, err)
+		return
+	}
+
+	contact, err := lostAndFoundService.GetLostAndFoundContact(data.ID, utils.GetUser(c).StudentID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
+		} else {
+			apiException.AbortWithException(c, apiException.ServerError, err)
+		}
+		return
+	}
+
+	utils.JsonSuccessResponse(c, contact)
 }

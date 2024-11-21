@@ -24,3 +24,21 @@ func GetLostAndFoundList(Type bool, campus, kind uint8) (records []models.LostAn
 		return records, err
 	}
 }
+
+// GetLostAndFoundContact 获取失物招领联系方式
+func GetLostAndFoundContact(id uint, studentID string) (contact string, err error) {
+	result, err := GetLostAndFoundById(id)
+	if err != nil {
+		return "", err
+	} else {
+		var record models.ContactViewRecord
+		record.RecordID = id
+		record.StudentID = studentID
+		res := database.DB.Save(&record)
+		if res.Error != nil {
+			return "", res.Error
+		} else {
+			return result.Contact, nil
+		}
+	}
+}
