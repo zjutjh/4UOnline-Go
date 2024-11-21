@@ -51,7 +51,7 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 	if err != nil {
-		apiException.AbortWithException(c, apiException.GetFileInfoError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 	_, err = file.Seek(0, io.SeekStart)
@@ -60,15 +60,9 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	// 文件重命名
-	ossSavePath, err := objectService.SetFileName(uploadType, fileExt)
-	if err != nil {
-		apiException.AbortWithException(c, apiException.SetFileNameError, err)
-		return
-	}
-
 	// 上传文件
-	objectUrl, err := objectService.PutPersistentObject(ossSavePath, file, fileHeader.Size, contentType)
+	objectKey := objectService.GetObjectKey(uploadType, fileExt)
+	objectUrl, err := objectService.PutObject(objectKey, file, fileHeader.Size, contentType)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.UploadFileError, err)
 		return
