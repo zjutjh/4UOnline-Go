@@ -5,20 +5,19 @@ import (
 
 	"4u-go/app/apiException"
 	"4u-go/app/models"
-	"4u-go/app/services/userCenterService"
+	"4u-go/app/services/userService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type changePasswordData struct {
+type deleteAccountData struct {
 	StudentID  string `json:"student_id" binding:"required"`
 	IdentityID string `json:"identity_id" binding:"required"`
-	Password   string `json:"password" binding:"required"`
 }
 
-// ChangePassword 修改密码接口
-func ChangePassword(c *gin.Context) {
-	var data changePasswordData
+// DeleteAccount 注销账户
+func DeleteAccount(c *gin.Context) {
+	var data deleteAccountData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ParamError, err)
@@ -37,7 +36,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 
-	err = userCenterService.RePassWithoutEmail(data.StudentID, data.IdentityID, data.Password)
+	err = userService.DeleteAccount(user, data.IdentityID)
 	if err != nil {
 		var apiErr *apiException.Error
 		if errors.As(err, &apiErr) {

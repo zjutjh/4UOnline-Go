@@ -7,32 +7,30 @@ import (
 	"4u-go/config/api/userCenterApi"
 )
 
-// RePassWithoutEmail 不通过邮箱修改密码
-func RePassWithoutEmail(stuid, iid, pwd string) error {
-	repassUrl, err := url.Parse(userCenterApi.RePassWithoutEmail)
+// DeleteAccount 注销账户
+func DeleteAccount(stuid, iid string) error {
+	deleteUrl, err := url.Parse(userCenterApi.DelAccount)
 	if err != nil {
 		return err
 	}
-	urlPath := repassUrl.String()
+	urlPath := deleteUrl.String()
 	regMap := map[string]any{
-		"stuid": stuid,
-		"iid":   iid,
-		"pwd":   pwd,
+		"iid":          iid,
+		"stuid":        stuid,
+		"bound_system": 1,
 	}
 	resp, err := FetchHandleOfPost(regMap, urlPath)
 	if err != nil {
 		return err
 	}
-	return handleRePassErrors(resp.Code)
+	return handleDeleteErrors(resp.Code)
 }
 
-// handleRePassErrors 根据响应码处理不同的错误
-func handleRePassErrors(code int) error {
+// handleDeleteErrors 根据响应码处理不同的错误
+func handleDeleteErrors(code int) error {
 	switch code {
 	case 400:
 		return apiException.StudentNumAndIidError
-	case 401:
-		return apiException.PwdError
 	case 404:
 		return apiException.UserNotFound
 	case 200:
