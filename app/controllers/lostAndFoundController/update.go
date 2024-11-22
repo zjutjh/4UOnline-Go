@@ -107,3 +107,46 @@ func UpdateLostAndFound(c *gin.Context) {
 
 	utils.JsonSuccessResponse(c, nil)
 }
+
+type updateLostAndFoundStatusData struct {
+	ID uint `json:"id" binding:"required"`
+}
+
+// UpdateLostAndFoundStatus 用户设置失物招领为已完成
+func UpdateLostAndFoundStatus(c *gin.Context) {
+	var data updateLostAndFoundStatusData
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ParamError, err)
+		return
+	}
+
+	// 判断失物招领是否存在
+	record, err := lostAndFoundService.GetLostAndFoundById(data.ID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
+		} else {
+			apiException.AbortWithException(c, apiException.ServerError, err)
+		}
+		return
+	}
+
+	user := utils.GetUser(c)
+	if user.StudentID != record.Publisher {
+		apiException.AbortWithException(c, apiException.NotPermission, nil)
+		return
+	}
+
+	{ // 更新失物招领信息
+		record.IsProcessed = 1
+	}
+
+	err = lostAndFoundService.SaveLostAndFound(record)
+	if err != nil {
+		apiException.AbortWithException(c, apiException.ServerError, err)
+		return
+	}
+
+	utils.JsonSuccessResponse(c, nil)
+}
