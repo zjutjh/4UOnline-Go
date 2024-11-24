@@ -1,7 +1,7 @@
 package wechat
 
 import (
-	"fmt"
+	"errors"
 	"strings"
 
 	"4u-go/config/config"
@@ -16,15 +16,15 @@ type wechatConfig struct {
 func getConfigs() (wechatConfig, error) {
 	wc := wechatConfig{}
 	if !config.Config.IsSet("wechat.appid") {
-		return wc, fmt.Errorf("wechat.appid configError")
+		return wc, errors.New("wechat.appid config error")
 	}
 	if !config.Config.IsSet("wechat.appsecret") {
-		return wc, fmt.Errorf("wechat.appsecret configError")
+		return wc, errors.New("wechat.appsecret config error")
 	}
 	wc.AppId = config.Config.GetString("wechat.appid")
 	wc.AppSecret = config.Config.GetString("wechat.appsecret")
 
-	wc.Driver = string(Memory)
+	wc.Driver = Memory
 	if config.Config.IsSet("wechat.driver") {
 		wc.Driver = strings.ToLower(config.Config.GetString("wechat.driver"))
 	}

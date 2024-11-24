@@ -1,7 +1,7 @@
 package session
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,12 +10,12 @@ import (
 func Init(r *gin.Engine) error {
 	config := getConfig()
 	switch config.Driver {
-	case string(Redis):
+	case Redis:
 		return setRedis(r, config.Name)
-	case string(Memory):
+	case Memory:
 		setMemory(r, config.Name)
 	default:
-		return fmt.Errorf("session configError")
+		return errors.New("session config error")
 	}
 
 	return nil

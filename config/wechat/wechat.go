@@ -1,7 +1,7 @@
 package wechat
 
 import (
-	"fmt"
+	"errors"
 
 	wechat "github.com/silenceper/wechat/v2"
 	"github.com/silenceper/wechat/v2/cache"
@@ -9,13 +9,10 @@ import (
 	miniConfig "github.com/silenceper/wechat/v2/miniprogram/config"
 )
 
-// driver 类型表示会话存储驱动的名称
-type driver string
-
 // 定义支持的驱动类型常量
 const (
-	Memory driver = "memory"
-	Redis  driver = "redis"
+	Memory = "memory"
+	Redis  = "redis"
 )
 
 // MiniProgram 是一个指向小程序实例的指针
@@ -30,12 +27,12 @@ func Init() error {
 	wc := wechat.NewWechat()
 	var wcCache cache.Cache
 	switch config.Driver {
-	case string(Redis):
+	case Redis:
 		wcCache = setRedis()
-	case string(Memory):
+	case Memory:
 		wcCache = cache.NewMemory()
 	default:
-		return fmt.Errorf("wechat configError")
+		return errors.New("wechat config error")
 	}
 
 	cfg := &miniConfig.Config{

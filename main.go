@@ -26,7 +26,7 @@ func main() {
 	r.NoRoute(midwares.HandleNotFound)
 	log.ZapInit()
 	if err := database.Init(); err != nil {
-		zap.L().Fatal(err.Error()) // 在 main 函数中处理错误并终止程序
+		zap.L().Fatal(err.Error())
 	}
 	if err := objectStorage.Init(); err != nil {
 		zap.L().Fatal(err.Error())
