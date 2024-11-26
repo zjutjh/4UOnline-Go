@@ -1,6 +1,9 @@
 package redis
 
-import "github.com/go-redis/redis/v8"
+import (
+	"4u-go/config/config"
+	"github.com/go-redis/redis/v8"
+)
 
 // redisConfig 定义 Redis 数据库的配置结构体
 type redisConfig struct {
@@ -10,20 +13,25 @@ type redisConfig struct {
 	Password string
 }
 
-// RedisClient 是全局的 Redis 客户端实例
-var RedisClient *redis.Client
+// GlobalClient 全局 Redis 客户端实例
+var GlobalClient *redis.Client
 
-// RedisInfo 保存当前 Redis 配置信息
-var RedisInfo redisConfig
+// InfoConfig 保存 Redis 配置信息
+var InfoConfig redisConfig
 
-// init 函数用于初始化 Redis 客户端和配置信息
-func init() {
-	info := getConfig()
+// Init 函数用于初始化 Redis 客户端和配置信息
+func Init() {
+	info := redisConfig{
+		Host:     config.Config.GetString("redis.host"),
+		Port:     config.Config.GetString("redis.port"),
+		DB:       config.Config.GetInt("redis.db"),
+		Password: config.Config.GetString("redis.pass"),
+	}
 
-	RedisClient = redis.NewClient(&redis.Options{
+	GlobalClient = redis.NewClient(&redis.Options{
 		Addr:     info.Host + ":" + info.Port,
 		Password: info.Password,
 		DB:       info.DB,
 	})
-	RedisInfo = info
+	InfoConfig = info
 }

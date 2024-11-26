@@ -6,6 +6,7 @@ import (
 	"4u-go/config/config"
 	"4u-go/config/database"
 	"4u-go/config/objectStorage"
+	"4u-go/config/redis"
 	"4u-go/config/router"
 	"4u-go/config/session"
 	"4u-go/config/wechat"
@@ -25,6 +26,7 @@ func main() {
 	r.NoMethod(midwares.HandleNotFound)
 	r.NoRoute(midwares.HandleNotFound)
 	log.ZapInit()
+	redis.Init()
 	if err := database.Init(); err != nil {
 		zap.L().Fatal(err.Error())
 	}
@@ -34,9 +36,7 @@ func main() {
 	if err := session.Init(r); err != nil {
 		zap.L().Fatal(err.Error())
 	}
-	if err := wechat.Init(); err != nil {
-		zap.L().Fatal(err.Error())
-	}
+	wechat.Init()
 	router.Init(r)
 
 	err := r.Run(":" + config.Config.GetString("server.port"))
