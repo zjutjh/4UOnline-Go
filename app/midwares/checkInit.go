@@ -1,8 +1,6 @@
 package midwares
 
 import (
-	"log"
-
 	"4u-go/app/apiException"
 	"4u-go/app/config"
 	"github.com/gin-gonic/gin"
@@ -12,10 +10,7 @@ import (
 func CheckInit(c *gin.Context) {
 	inited := config.GetInit()
 	if !inited {
-		err := c.AbortWithError(200, apiException.NotInit)
-		if err != nil {
-			log.Println("CheckInitFailed:", err) // 记录错误日志，而不是退出程序
-		}
+		apiException.AbortWithException(c, apiException.NotInit, nil)
 		return
 	}
 	c.Next()
