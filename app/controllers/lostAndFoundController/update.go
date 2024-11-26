@@ -36,7 +36,11 @@ func ReviewLostAndFound(c *gin.Context) {
 		return
 	}
 
-	err = lostAndFoundService.ReviewLostAndFound(data.ID, data.IsApproved)
+	if data.IsApproved {
+		err = lostAndFoundService.ApproveLostAndFound(data.ID)
+	}
+	err = lostAndFoundService.RejectLostAndFound(data.ID)
+
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
