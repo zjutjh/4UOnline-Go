@@ -36,42 +36,57 @@ func Init(r *gin.Engine) {
 		admin := api.Group("/admin")
 		{
 			admin.POST("/create/key", adminController.CreateAdminByKey)
+
+			adminActivity := admin.Group("/activity", midwares.CheckAdmin)
+			{
+				adminActivity.POST("", activityController.CreateActivity)
+				adminActivity.PUT("", activityController.UpdateActivity)
+				adminActivity.DELETE("", activityController.DeleteActivity)
+			}
+
+			adminAnnouncement := admin.Group("/announcement", midwares.CheckAdmin)
+			{
+				adminAnnouncement.POST("", announcementController.CreateAnnouncement)
+				adminAnnouncement.PUT("", announcementController.UpdateAnnouncement)
+				adminAnnouncement.DELETE("", announcementController.DeleteAnnouncement)
+			}
+
+			adminCollege := admin.Group("/college", midwares.CheckSuperAdmin)
+			{
+				adminCollege.POST("", collegeController.CreateCollege)
+				adminCollege.PUT("", collegeController.UpdateCollege)
+				adminCollege.DELETE("", collegeController.DeleteCollege)
+			}
+
+			adminWebsite := admin.Group("/website", midwares.CheckAdmin)
+			{
+				adminWebsite.POST("", websiteController.CreateWebsite)
+				adminWebsite.DELETE("", websiteController.DeleteWebsite)
+				adminWebsite.PUT("", websiteController.UpdateWebsite)
+				adminWebsite.GET("/list", websiteController.GetEditableWebsites)
+			}
 		}
 
 		activity := api.Group("/activity")
 		{
 			activity.GET("/list", activityController.GetActivityList)
 			activity.GET("", activityController.GetActivity)
-			activity.POST("", midwares.CheckAdmin, activityController.CreateActivity)
-			activity.PUT("", midwares.CheckAdmin, activityController.UpdateActivity)
-			activity.DELETE("", midwares.CheckAdmin, activityController.DeleteActivity)
 		}
 
 		announcement := api.Group("/announcement")
 		{
 			announcement.GET("/list", announcementController.GetAnnouncementList)
 			announcement.GET("", announcementController.GetAnnouncement)
-			announcement.POST("", midwares.CheckAdmin, announcementController.CreateAnnouncement)
-			announcement.PUT("", midwares.CheckAdmin, announcementController.UpdateAnnouncement)
-			announcement.DELETE("", midwares.CheckAdmin, announcementController.DeleteAnnouncement)
 		}
 
 		college := api.Group("/college")
 		{
-			college.GET("", collegeController.GetCollegeList)
-			college.POST("", midwares.CheckSuperAdmin, collegeController.CreateCollege)
-			college.PUT("", midwares.CheckSuperAdmin, collegeController.UpdateCollege)
-			college.DELETE("", midwares.CheckSuperAdmin, collegeController.DeleteCollege)
+			college.GET("/list", collegeController.GetCollegeList)
 		}
 
 		website := api.Group("/website")
 		{
-			website.GET("", websiteController.GetWebsiteList)
-			website.POST("", midwares.CheckAdmin, websiteController.CreateWebsite)
-			website.DELETE("", midwares.CheckAdmin, websiteController.DeleteWebsite)
-			website.PUT("", midwares.CheckAdmin, websiteController.UpdateWebsite)
-
-			website.GET("/admin", midwares.CheckAdmin, websiteController.GetEditableWebsites)
+			website.GET("/list", websiteController.GetWebsiteList)
 		}
 	}
 }

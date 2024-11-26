@@ -1,12 +1,12 @@
 package objectStorage
 
 import (
+	"fmt"
 	"strings"
 
 	"4u-go/config/config"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/sirupsen/logrus"
 )
 
 // MinioCreateTempDirServant 结构体定义
@@ -37,7 +37,7 @@ func Init() error {
 		Secure: secure,
 	})
 	if err != nil {
-		logrus.Fatalf("objectStorage.minio 创建客户端失败: %s", err)
+		return fmt.Errorf("minio initialization failed: %w", err)
 	}
 
 	MinioService = &MinioCreateTempDirServant{
