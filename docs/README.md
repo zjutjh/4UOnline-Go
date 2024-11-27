@@ -1,7 +1,7 @@
 ## 项目说明
 
-
 ### 项目结构
+
 ```
 4u-go
 ├── LICENSE                     # 许可证文件
@@ -29,36 +29,71 @@
 ├── go.sum                      # Go模块依赖的校验文件
 ├── logs                        # 日志目录
 └── main.go                     # 项目主入口
-
 ```
 
-### 如何运行
-1. 克隆该项目的开发分支
+### 如何参与开发
+
+1. 克隆该项目并切换到dev分支，然后切出自己的分支进行开发
+
+```shell
+git clone https://github.com/zjutjh/4UOnline-Go.git
+cd 4UOnline-Go
+
+git checkout dev
+git checkout -b <Github用户名>/dev
+git push
 ```
-git clone -b dev https://github.com/zjutjh/4UOnline-Go.git
+
+在开发过程中，请确保自己分支的进度与`dev`分支同步
+
+```shell
+git pull origin
+git merge dev  // 将dev分支的更改合并到自己的分支
 ```
-2. 更改配置文件，并按注释要求填写database、redis、user和wechat的配置(user(用户中心)配置询问部长团，并要提供个人学号，wechat不为空就行)
+
+若你实在无法解决冲突，可以尝试将自己的分支重置到`dev`分支
+
+```shell
+git reset --hard origin/dev
+git push --force
 ```
-mv config.example.yaml config.yaml
+
+2. 复制示例配置，并按注释要求填写配置文件（`user`配置询问部长团，并要提供个人学号）
+
+```shell
+/* Linux */
+cp config.example.yaml config.yaml
+
+/* Windows */
+copy config.example.yaml config.yaml
 ```
-3. 首次运行后端时，在初始化数据库后，在config表插入两条`encryptKey`值为`16位的整数倍的字符串`和`initKey`值为`True`的记录
-```
+
+在配置数据库后，向 config 表插入如下两条记录来完成初始化
+
+| key | value |
+|---|---|
+| encryptKey | *16位的整数倍的字符串 |
+| initKey | True |
+
+3. 启动程序
+
+```shell
 go run main.go
 ```
-4. 后续直接运行就行
+
+4. 每次提交 commit 前，先运行以下命令来格式化代码并检查规范（需要安装 [gci](https://github.com/daixiang0/gci) 和 [golangci-lint](https://golangci-lint.run/)）
+
 ```
-go run main.go
-```
-5. 每次提交commit前，先运行以下代码检查后端
-使用[golangci-lint](https://golangci-lint.run/)(v1.62.0)检查代码
-```
+gofmt -w .
+gci write . -s standard -s default
 golangci-lint run --config .golangci.yml
 ```
-6. 打包后端到服务器运行
+
+5. 打包后端到服务器运行
+
 ```
 SET CGO_ENABLE=0
 SET GOOS=linux
 SET GOARCH=amd64
 go build -o 4u main.go
 ```
-
