@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
+	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )
 
@@ -18,9 +19,9 @@ type Client struct {
 func New() Client {
 	s := Client{
 		Client: resty.New().
-			SetTimeout(10 * time.Second).
-			SetRetryCount(3).
-			SetRetryWaitTime(2 * time.Second),
+			SetTimeout(5 * time.Second).
+			SetJSONMarshaler(jsoniter.ConfigCompatibleWithStandardLibrary.Marshal).
+			SetJSONUnmarshaler(jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal),
 	}
 	// 利用中间件实现请求日志
 	s.OnAfterResponse(RestyLogMiddleware)
@@ -47,7 +48,7 @@ func RestyLogMiddleware(_ *resty.Client, resp *resty.Response) error {
 		zap.L().Warn("请求出现错误",
 			zap.String("method", method),
 			zap.String("url", url),
-			zap.Float64("time_spent", resp.Time().Seconds()),
+			zap.Int64("time_spent(ms)", resp.Time().Milliseconds()),
 		)
 	}
 	return nil

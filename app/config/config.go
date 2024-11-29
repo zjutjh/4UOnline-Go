@@ -16,7 +16,7 @@ var ctx = context.Background()
 
 // getConfig 从 Redis 获取配置，如果不存在则从数据库中获取，并缓存到 Redis
 func getConfig(key string) string {
-	val, err := redis.RedisClient.Get(ctx, key).Result()
+	val, err := redis.GlobalClient.Get(ctx, key).Result()
 	if err == nil {
 		return val
 	}
@@ -27,13 +27,13 @@ func getConfig(key string) string {
 			Key: key,
 		}).First(&config)
 
-	redis.RedisClient.Set(ctx, key, config.Value, 0)
+	redis.GlobalClient.Set(ctx, key, config.Value, 0)
 	return config.Value
 }
 
 // setConfig 设置指定的配置项，如果不存在则创建新的配置。
 func setConfig(key, value string) error {
-	redis.RedisClient.Set(ctx, key, value, 0)
+	redis.GlobalClient.Set(ctx, key, value, 0)
 	var config models.Config
 	result := database.DB.Where("`key` = ?", key).First(&config)
 	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -56,12 +56,12 @@ func setConfig(key, value string) error {
 
 // checkConfig 检查指定的配置项是否存在于 Redis 中。
 func checkConfig(key string) bool {
-	intCmd := redis.RedisClient.Exists(ctx, key)
+	intCmd := redis.GlobalClient.Exists(ctx, key)
 	return intCmd.Val() == 1
 }
 
 func delConfig(key string) error {
-	redis.RedisClient.Del(ctx, key)
+	redis.GlobalClient.Del(ctx, key)
 	res := database.DB.Where(&models.Config{
 		Key: key,
 	}).Delete(models.Config{})

@@ -15,7 +15,7 @@ type UserCenterResponse struct {
 
 // FetchHandleOfPost 向用户中心发送 POST 请求
 func FetchHandleOfPost(form map[string]any, url string) (*UserCenterResponse, error) {
-	client := request.New()
+	client := request.NewUnSafe()
 	var rc UserCenterResponse
 
 	// 发送 POST 请求并自动解析 JSON 响应
