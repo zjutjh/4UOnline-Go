@@ -38,8 +38,9 @@ func ReviewLostAndFound(c *gin.Context) {
 
 	if data.IsApproved {
 		err = lostAndFoundService.ApproveLostAndFound(data.ID)
+	} else {
+		err = lostAndFoundService.RejectLostAndFound(data.ID)
 	}
-	err = lostAndFoundService.RejectLostAndFound(data.ID)
 
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
