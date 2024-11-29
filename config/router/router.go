@@ -37,6 +37,12 @@ func Init(r *gin.Engine) {
 		admin := api.Group("/admin")
 		{
 			admin.POST("/create/key", adminController.CreateAdminByKey)
+
+			adminLostAndFound := admin.Group("/lost-and-found", midwares.CheckAdmin)
+			{
+				adminLostAndFound.PUT("", lostAndFoundController.ReviewLostAndFound)
+				adminLostAndFound.PUT("/update", lostAndFoundController.UpdateLostAndFound)
+			}
 		}
 
 		activity := api.Group("/activity")
@@ -79,8 +85,6 @@ func Init(r *gin.Engine) {
 		{
 			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
 			lostAndFound.DELETE("", midwares.CheckLogin, lostAndFoundController.DeleteLostAndFound)
-			lostAndFound.PUT("", midwares.CheckAdmin, lostAndFoundController.ReviewLostAndFound)
-			lostAndFound.PUT("/admin", midwares.CheckLogin, lostAndFoundController.UpdateLostAndFound)
 			lostAndFound.GET("/list", lostAndFoundController.GetLostAndFoundList)
 			lostAndFound.GET("", midwares.CheckLogin, lostAndFoundController.GetLostAndFoundContact)
 			lostAndFound.GET("/latest", lostAndFoundController.GetLatestLostAndFound)
