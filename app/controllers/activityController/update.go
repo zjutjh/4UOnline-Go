@@ -7,6 +7,7 @@ import (
 	"4u-go/app/apiException"
 	"4u-go/app/models"
 	"4u-go/app/services/activityService"
+	"4u-go/app/services/objectService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -59,6 +60,10 @@ func UpdateActivity(c *gin.Context) {
 	if activity.AuthorID != user.ID && user.Type != models.SuperAdmin {
 		apiException.AbortWithException(c, apiException.NotPermission, nil)
 		return
+	}
+
+	if data.Img != activity.Img { // 若图片更换则删除旧图片
+		objectService.DeleteObjectByUrlAsync(activity.Img)
 	}
 
 	{ // 更新活动信息
