@@ -53,11 +53,10 @@ func AuthByPassword(c *gin.Context) {
 	}
 	utils.JsonSuccessResponse(c, gin.H{
 		"user": gin.H{
-			"id":         user.ID,
-			"studentID":  user.StudentID,
-			"userType":   user.Type,
-			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreatedAt,
+			"id":        user.ID,
+			"studentID": user.StudentID,
+			"userType":  user.Type,
+			"college":   user.College,
 		},
 	})
 }
@@ -75,11 +74,10 @@ func AuthBySession(c *gin.Context) {
 	}
 	utils.JsonSuccessResponse(c, gin.H{
 		"user": gin.H{
-			"id":         user.ID,
-			"studentID":  user.StudentID,
-			"userType":   user.Type,
-			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreatedAt,
+			"id":        user.ID,
+			"studentID": user.StudentID,
+			"userType":  user.Type,
+			"college":   user.College,
 		},
 	})
 }
@@ -115,11 +113,10 @@ func WeChatLogin(c *gin.Context) {
 	}
 	utils.JsonSuccessResponse(c, gin.H{
 		"user": gin.H{
-			"id":         user.ID,
-			"studentID":  user.StudentID,
-			"userType":   user.Type,
-			"phoneNum":   user.PhoneNum,
-			"createTime": user.CreatedAt,
+			"id":        user.ID,
+			"studentID": user.StudentID,
+			"userType":  user.Type,
+			"college":   user.College,
 		},
 	})
 }
