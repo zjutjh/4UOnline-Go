@@ -10,6 +10,9 @@ const (
 func EncodeCampus(campus []uint) uint {
 	var result uint
 	for _, c := range campus {
+		if c > 3 || c == 0 { // 拦截错误参数
+			continue
+		}
 		result |= 1 << (c - 1)
 	}
 	return result
