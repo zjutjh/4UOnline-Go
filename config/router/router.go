@@ -16,7 +16,7 @@ import (
 func Init(r *gin.Engine) {
 	const pre = "/api"
 
-	api := r.Group(pre, midwares.CheckInit)
+	api := r.Group(pre)
 	{
 		user := api.Group("/user")
 		{

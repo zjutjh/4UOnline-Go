@@ -2,6 +2,7 @@ package main
 
 import (
 	"4u-go/app/midwares"
+	"4u-go/app/utils/aes"
 	"4u-go/app/utils/log"
 	"4u-go/config/config"
 	"4u-go/config/database"
@@ -27,6 +28,9 @@ func main() {
 	r.NoRoute(midwares.HandleNotFound)
 	log.ZapInit()
 	redis.Init()
+	if err := aes.Init(); err != nil {
+		zap.L().Fatal(err.Error())
+	}
 	if err := database.Init(); err != nil {
 		zap.L().Fatal(err.Error())
 	}

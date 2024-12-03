@@ -29,6 +29,9 @@ user:
 admin:
   key:   # 管理员密钥
 
+aes:  # AES 密钥，长度必须为 16、24 或 32 字节
+  encryptKey:
+
 minio: # minio 存储配置
   accessKey:  # 用于身份验证的访问密钥
   secretKey:  # 用于身份验证的秘密密钥
