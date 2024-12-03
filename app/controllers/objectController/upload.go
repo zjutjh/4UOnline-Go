@@ -9,6 +9,7 @@ import (
 	"4u-go/app/services/objectService"
 	"4u-go/app/utils"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type uploadFileData struct {
@@ -35,8 +36,7 @@ func UploadFile(c *gin.Context) {
 	defer func(file multipart.File) {
 		err := file.Close()
 		if err != nil {
-			apiException.AbortWithException(c, apiException.ServerError, err)
-			return
+			zap.L().Error("文件流关闭错误", zap.Error(err))
 		}
 	}(file)
 
