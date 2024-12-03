@@ -42,8 +42,8 @@ func Init(r *gin.Engine) {
 			{
 				adminLostAndFound.PUT("", lostAndFoundController.ReviewLostAndFound)
 				adminLostAndFound.PUT("/update", lostAndFoundController.UpdateLostAndFound)
-      }
-      
+			}
+
 			adminActivity := admin.Group("/activity", midwares.CheckAdmin)
 			{
 				adminActivity.POST("", activityController.CreateActivity)
