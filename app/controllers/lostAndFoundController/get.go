@@ -11,20 +11,21 @@ import (
 )
 
 type getLostAndFoundListData struct {
-	Type   bool  `json:"type"`                      // 1-失物 0-寻物
-	Campus uint8 `json:"campus" binding:"required"` // 校区 1-朝晖 2-屏峰 3-莫干山
-	Kind   uint8 `json:"kind"`                      // 物品种类 0全部1其他2证件3箱包4首饰5现金6电子产品7钥匙
+	Type   bool  `json:"type"`   // 1-失物 0-寻物
+	Campus uint8 `json:"campus"` // 校区 0-其他 1-朝晖 2-屏峰 3-莫干山
+	Kind   uint8 `json:"kind"`   // 物品种类 0-全部 1-其他 2-饭卡 3-电子 4-文体 5-衣包 6-证件
 }
 type getLostAndFoundListResponse struct {
 	LostAndFoundList []lostAndFoundElement `json:"list"`
 }
 type lostAndFoundElement struct {
-	ID           uint   `json:"id"`
-	Imgs         string `json:"imgs"`
-	Name         string `json:"name"`
-	Place        string `json:"place"`
-	Time         string `json:"time"`
-	Introduction string `json:"introduction"`
+	ID           uint     `json:"id"`
+	Imgs         []string `json:"imgs"`
+	Name         string   `json:"name"`
+	Place        string   `json:"place"`
+	Time         string   `json:"time"`
+	Introduction string   `json:"introduction"`
+	Kind         uint8    `json:"kind"`
 }
 
 // GetLostAndFoundList 获取失物招领列表
@@ -44,9 +45,11 @@ func GetLostAndFoundList(c *gin.Context) {
 
 	lostAndFoundList := make([]lostAndFoundElement, 0)
 	for _, record := range list {
+		// 将string转为[]string
+		imgs := utils.StringToStrings(record.Imgs)
 		lostAndFoundList = append(lostAndFoundList, lostAndFoundElement{
 			ID:           record.ID,
-			Imgs:         record.Imgs,
+			Imgs:         imgs,
 			Name:         record.Name,
 			Place:        record.Place,
 			Time:         record.Time,
@@ -117,15 +120,15 @@ type getLostAndFoundStatusResponse struct {
 	List []lostAndFoundStatusElement `json:"list"`
 }
 type lostAndFoundStatusElement struct {
-	ID           uint   `json:"id"`
-	Type         bool   `json:"type"`
-	Imgs         string `json:"imgs"`
-	Name         string `json:"name"`
-	Kind         uint8  `json:"kind"`
-	Place        string `json:"place"`
-	Time         string `json:"time"`
-	Introduction string `json:"introduction"`
-	IsApproved   uint8  `json:"is_approved"`
+	ID           uint     `json:"id"`
+	Type         bool     `json:"type"`
+	Imgs         []string `json:"imgs"`
+	Name         string   `json:"name"`
+	Kind         uint8    `json:"kind"`
+	Place        string   `json:"place"`
+	Time         string   `json:"time"`
+	Introduction string   `json:"introduction"`
+	IsApproved   uint8    `json:"is_approved"`
 }
 
 // GetUserLostAndFoundStatus 查看失物招领信息的状态
@@ -145,10 +148,12 @@ func GetUserLostAndFoundStatus(c *gin.Context) {
 
 	lostAndFoundList := make([]lostAndFoundStatusElement, 0)
 	for _, record := range list {
+		// 将string转为[]string
+		imgs := utils.StringToStrings(record.Imgs)
 		lostAndFoundList = append(lostAndFoundList, lostAndFoundStatusElement{
 			ID:           record.ID,
 			Type:         record.Type,
-			Imgs:         record.Imgs,
+			Imgs:         imgs,
 			Name:         record.Name,
 			Kind:         record.Kind,
 			Place:        record.Place,
@@ -157,7 +162,6 @@ func GetUserLostAndFoundStatus(c *gin.Context) {
 			IsApproved:   record.IsApproved,
 		})
 	}
-
 	utils.JsonSuccessResponse(c, getLostAndFoundStatusResponse{
 		List: lostAndFoundList,
 	})
