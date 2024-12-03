@@ -51,7 +51,13 @@ linters-settings:
       - name: max-public-structs    # 最大公共结构体数目
         severity: warning
         disabled: true
-      - name: cognitive-complexity
+      - name: argument-limit        # 函数参数限制
+        severity: warning
+        disabled: true
+      - name: function-length       # 函数长度限制
+        severity: warning
+        disabled: true
+      - name: cognitive-complexity  # 认知复杂度
         severity: warning
         disabled: false
         arguments: [ 10 ]

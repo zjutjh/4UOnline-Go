@@ -10,8 +10,7 @@ type User struct {
 	Type         uint      `json:"type"`           // 用户类型
 	Password     string    `json:"password"`       // 密码  （只有管理员有密码）
 	WechatOpenID string    `json:"wechat_open_id"` // 微信 OpenID
-	College      string    `json:"college"`        // 学院
-	Class        string    `json:"class"`          // 班级
+	College      string    `json:"college"`        // 学院  （学生只有学院，管理员除学院外还有ForYou工程）
 	PhoneNum     string    `json:"phone_num"`      // 手机号码
 	CreatedAt    time.Time `json:"created_at"`     // 记录创建时间
 }

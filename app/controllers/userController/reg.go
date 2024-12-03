@@ -17,8 +17,10 @@ type createStudentUserWechatForm struct {
 	Password     string `json:"password"  binding:"required"`
 	Type         uint   `json:"type"  binding:"required"` // 用户类型 1-本科生 2-研究生
 	IDCardNumber string `json:"idCardNumber"  binding:"required"`
-	Email        string `json:"email"  binding:"required"`
+	Name         string `json:"name"  binding:"required"`
+	College      string `json:"college"  binding:"required"`
 	Code         string `json:"code"  binding:"required"`
+	Email        string `json:"email"`
 }
 
 // BindOrCreateStudentUserFromWechat 微信创建学生用户
@@ -42,6 +44,8 @@ func BindOrCreateStudentUserFromWechat(c *gin.Context) {
 		postForm.Type,
 		postForm.IDCardNumber,
 		postForm.Email,
+		postForm.Name,
+		postForm.College,
 		session.OpenID)
 	if err != nil {
 		var apiErr *apiException.Error
@@ -66,7 +70,9 @@ type createStudentUserForm struct {
 	Password     string `json:"password"  binding:"required"`
 	Type         uint   `json:"type"  binding:"required"` // 用户类型 1-本科生 2-研究生
 	IDCardNumber string `json:"idCardNumber"  binding:"required"`
-	Email        string `json:"email"  binding:"required"`
+	Name         string `json:"name"  binding:"required"`
+	College      string `json:"college"  binding:"required"`
+	Email        string `json:"email"`
 }
 
 // CreateStudentUser H5创建学生用户
@@ -84,7 +90,10 @@ func CreateStudentUser(c *gin.Context) {
 		postForm.Password,
 		postForm.IDCardNumber,
 		postForm.Email,
-		postForm.Type)
+		postForm.Name,
+		postForm.College,
+		postForm.Type,
+	)
 	if err != nil {
 		var apiErr *apiException.Error
 		if errors.As(err, &apiErr) {

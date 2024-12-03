@@ -11,7 +11,10 @@ import (
 )
 
 // CreateStudentUser 创建学生用户
-func CreateStudentUser(studentID, password, idCardNumber, email string, usertype uint) (*models.User, error) {
+func CreateStudentUser(
+	studentID, password, idCardNumber, email, name, college string,
+	usertype uint,
+) (*models.User, error) {
 	_, err := GetUserByStudentID(studentID)
 	if err == nil {
 		return nil, apiException.UserAlreadyExisted
@@ -24,6 +27,8 @@ func CreateStudentUser(studentID, password, idCardNumber, email string, usertype
 	}
 
 	user := &models.User{
+		Name:      name,
+		College:   college,
 		Type:      usertype,
 		StudentID: studentID,
 	}
@@ -41,13 +46,15 @@ func CreateStudentUserWechat(
 	userType uint,
 	idCardNumber string,
 	email string,
+	name string,
+	college string,
 	wechatOpenID string,
 ) (*models.User, error) {
 	_, err := GetUserByWechatOpenID(wechatOpenID)
 	if err == nil {
 		return nil, apiException.OpenIDError
 	}
-	user, err := CreateStudentUser(studentID, password, idCardNumber, email, userType)
+	user, err := CreateStudentUser(studentID, password, idCardNumber, email, name, college, userType)
 	if err != nil && !errors.Is(err, apiException.ReactiveError) {
 		return nil, err
 	}
