@@ -43,14 +43,7 @@ func DeleteActivity(c *gin.Context) {
 	}
 
 	// 删除活动对应的图片
-	objectKey, ok := objectService.GetObjectKeyFromUrl(activity.Img)
-	if ok {
-		err = objectService.DeleteObject(objectKey)
-		if err != nil {
-			apiException.AbortWithException(c, apiException.ServerError, err)
-			return
-		}
-	}
+	objectService.DeleteObjectByUrlAsync(activity.Img)
 
 	err = activityService.DeleteActivityById(data.ID)
 	if err != nil {

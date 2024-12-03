@@ -2,12 +2,13 @@ package objectService
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"strings"
 
 	"4u-go/config/objectStorage"
 	"github.com/minio/minio-go/v7"
-	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 // ms 是全局的 MinioService 实例
@@ -47,7 +48,20 @@ func DeleteObject(objectKey string) error {
 		minio.RemoveObjectOptions{ForceDelete: true},
 	)
 	if err != nil {
-		return errors.New("failed to delete object from bucket")
+		return fmt.Errorf("failed to delete object: %w", err)
 	}
 	return nil
+}
+
+// DeleteObjectByUrlAsync 通过给定的 Url 异步删除对象
+func DeleteObjectByUrlAsync(url string) {
+	objectKey, ok := GetObjectKeyFromUrl(url)
+	if ok {
+		go func(objectKey string) {
+			err := DeleteObject(objectKey)
+			if err != nil {
+				zap.L().Error("Minio 删除对象错误", zap.String("objectKey", objectKey), zap.Error(err))
+			}
+		}(objectKey)
+	}
 }
