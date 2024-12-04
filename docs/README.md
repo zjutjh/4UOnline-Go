@@ -68,13 +68,6 @@ cp config.example.yaml config.yaml
 copy config.example.yaml config.yaml
 ```
 
-在配置数据库后，向 config 表插入如下两条记录来完成初始化
-
-| key | value |
-|---|---|
-| encryptKey | *16位的整数倍的字符串 |
-| initKey | True |
-
 3. 启动程序
 
 ```shell
