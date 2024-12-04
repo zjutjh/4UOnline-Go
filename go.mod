@@ -3,6 +3,8 @@ module 4u-go
 go 1.22.9
 
 require (
+	github.com/chai2010/webp v1.1.1
+	github.com/disintegration/imaging v1.6.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gabriel-vasile/mimetype v1.4.6
 	github.com/gin-contrib/cors v1.7.2
@@ -12,7 +14,6 @@ require (
 	github.com/go-resty/resty/v2 v2.16.0
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go/v7 v7.0.80
-	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/silenceper/wechat/v2 v2.1.7
 	github.com/spf13/viper v1.19.0
@@ -77,6 +78,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.12.0 // indirect
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
+	golang.org/x/image v0.22.0 // indirect
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
