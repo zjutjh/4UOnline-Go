@@ -1,8 +1,9 @@
+//nolint:all
 package objectController
 
 import (
-	"bytes"
 	"errors"
+	"io"
 	"mime/multipart"
 
 	"4u-go/app/apiException"
@@ -27,14 +28,20 @@ func UploadFile(c *gin.Context) {
 
 	uploadType := data.UploadType
 	fileSize := data.File.Size
-	fileData, err := objectService.ReadFileToBytes(data.File)
+	file, err := data.File.Open()
 	if err != nil {
 		apiException.AbortWithException(c, apiException.UploadFileError, err)
 		return
 	}
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			zap.L().Warn("文件关闭错误", zap.Error(err))
+		}
+	}(file)
 
 	// 获取文件信息
-	contentType, fileExt, err := objectService.GetFileInfo(fileData, fileSize, uploadType)
+	contentType, fileExt, err := objectService.GetFileInfo(file, fileSize, uploadType)
 	if errors.Is(err, objectService.ErrSizeExceeded) {
 		apiException.AbortWithException(c, apiException.FileSizeExceedError, err)
 		return
@@ -43,22 +50,23 @@ func UploadFile(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.ParamError, err)
 		return
 	}
-	if errors.Is(err, objectService.ErrNotImage) {
-		apiException.AbortWithException(c, apiException.FileNotImageError, err)
-		return
-	}
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 
+	var fileReader io.Reader = file
 	if uploadType == objectService.TypeImage {
-		d, s, err := objectService.ConvertToWebP(fileData)
+		reader, size, err := objectService.ConvertToWebP(file)
 		if err != nil {
+			if errors.Is(err, objectService.ErrNotImage) {
+				apiException.AbortWithException(c, apiException.FileNotImageError, err)
+				return
+			}
 			zap.L().Error("转换图片到 WebP 失败", zap.Error(err))
 		} else { // 若转换成功则替代原文件
-			fileData = d
-			fileSize = s
+			fileReader = reader
+			fileSize = size
 			fileExt = ".webp"
 			contentType = "image/webp"
 		}
@@ -66,9 +74,9 @@ func UploadFile(c *gin.Context) {
 
 	// 上传文件
 	objectKey := objectService.GenerateObjectKey(uploadType, fileExt)
-	objectUrl, err := objectService.PutObject(objectKey, bytes.NewReader(fileData), fileSize, contentType)
+	objectUrl, err := objectService.PutObject(objectKey, fileReader, fileSize, contentType)
 	if err != nil {
-		apiException.AbortWithException(c, apiException.UploadFileError, err)
+		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
 

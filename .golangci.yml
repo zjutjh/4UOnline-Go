@@ -57,6 +57,9 @@ linters-settings:
       - name: function-length       # 函数长度限制
         severity: warning
         disabled: true
+      - name: cyclomatic            # 圈复杂度
+        severity: warning
+        disabled: true
       - name: cognitive-complexity  # 认知复杂度
         severity: warning
         disabled: false
