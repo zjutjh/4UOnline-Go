@@ -1,8 +1,8 @@
 package objectController
 
 import (
+	"bytes"
 	"errors"
-	"io"
 	"mime/multipart"
 
 	"4u-go/app/apiException"
@@ -26,22 +26,15 @@ func UploadFile(c *gin.Context) {
 	}
 
 	uploadType := data.UploadType
-	fileHeader := data.File
-	// 获取文件流
-	file, err := data.File.Open()
+	fileSize := data.File.Size
+	fileData, err := objectService.ReadFileToBytes(data.File)
 	if err != nil {
-		apiException.AbortWithException(c, apiException.ServerError, err)
+		apiException.AbortWithException(c, apiException.UploadFileError, err)
 		return
 	}
-	defer func(file multipart.File) {
-		err := file.Close()
-		if err != nil {
-			zap.L().Error("文件流关闭错误", zap.Error(err))
-		}
-	}(file)
 
 	// 获取文件信息
-	contentType, fileExt, err := objectService.GetFileInfo(file, fileHeader, uploadType)
+	contentType, fileExt, err := objectService.GetFileInfo(fileData, fileSize, uploadType)
 	if errors.Is(err, objectService.ErrSizeExceeded) {
 		apiException.AbortWithException(c, apiException.FileSizeExceedError, err)
 		return
@@ -58,15 +51,22 @@ func UploadFile(c *gin.Context) {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
 	}
-	_, err = file.Seek(0, io.SeekStart)
-	if err != nil {
-		apiException.AbortWithException(c, apiException.ServerError, err)
-		return
+
+	if uploadType == objectService.TypeImage {
+		d, s, err := objectService.ConvertToWebP(fileData)
+		if err != nil {
+			zap.L().Error("转换图片到 WebP 失败", zap.Error(err))
+		} else { // 若转换成功则替代原文件
+			fileData = d
+			fileSize = s
+			fileExt = ".webp"
+			contentType = "image/webp"
+		}
 	}
 
 	// 上传文件
 	objectKey := objectService.GenerateObjectKey(uploadType, fileExt)
-	objectUrl, err := objectService.PutObject(objectKey, file, fileHeader.Size, contentType)
+	objectUrl, err := objectService.PutObject(objectKey, bytes.NewReader(fileData), fileSize, contentType)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.UploadFileError, err)
 		return
