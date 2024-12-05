@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
-	"strings"
 	"time"
 
 	"github.com/chai2010/webp"
@@ -14,7 +13,6 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/gabriel-vasile/mimetype"
 	uuid "github.com/satori/go.uuid"
-	"go.uber.org/zap"
 )
 
 var (
@@ -43,7 +41,7 @@ var uploadTypeLimits = map[string]int64{
 
 // GetFileInfo 获取文件基本信息
 func GetFileInfo(
-	fileData []byte,
+	file multipart.File,
 	fileSize int64,
 	uploadType string,
 ) (
@@ -57,13 +55,10 @@ func GetFileInfo(
 	}
 
 	// 通过文件头获取类型和扩展名
-	mimeType, mimeExt := getFileTypeAndExt(fileData)
-
-	// 检查是否为图像类型
-	if uploadType == TypeImage && !strings.HasPrefix(mimeType, "image") {
-		return "", "", ErrNotImage
+	mimeType, mimeExt, err := getFileTypeAndExt(file)
+	if err != nil {
+		return "", "", err
 	}
-
 	return mimeType, mimeExt, nil
 }
 
@@ -85,16 +80,23 @@ func checkFileSize(uploadType string, size int64) error {
 }
 
 // getFileTypeAndExt 根据文件头（Magic Number）判断文件类型和扩展名
-func getFileTypeAndExt(fileData []byte) (mimeType string, mimeExt string) {
-	mime := mimetype.Detect(fileData)
-	return mime.String(), mime.Extension()
+func getFileTypeAndExt(file multipart.File) (mimeType string, mimeExt string, err error) {
+	mime, err := mimetype.DetectReader(file)
+	if err != nil {
+		return "", "", err
+	}
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		return "", "", err
+	}
+	return mime.String(), mime.Extension(), nil
 }
 
 // ConvertToWebP 将图片转换为 WebP 格式
-func ConvertToWebP(fileData []byte) ([]byte, int64, error) {
-	img, err := imaging.Decode(bytes.NewReader(fileData))
+func ConvertToWebP(file multipart.File) (io.Reader, int64, error) {
+	img, err := imaging.Decode(file)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("%w: %w", ErrNotImage, err)
 	}
 
 	var buf bytes.Buffer
@@ -102,25 +104,5 @@ func ConvertToWebP(fileData []byte) ([]byte, int64, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	return buf.Bytes(), int64(buf.Len()), nil
-}
-
-// ReadFileToBytes 读取文件数据
-func ReadFileToBytes(fileHeader *multipart.FileHeader) ([]byte, error) {
-	file, err := fileHeader.Open()
-	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
-	}
-	defer func(file multipart.File) {
-		err := file.Close()
-		if err != nil {
-			zap.L().Warn("文件关闭失败", zap.Error(err))
-		}
-	}(file)
-
-	data, err := io.ReadAll(file)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
-	}
-	return data, nil
+	return bytes.NewReader(buf.Bytes()), int64(buf.Len()), nil
 }
