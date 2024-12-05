@@ -1,8 +1,3 @@
-# 设置环境变量
-CGO_ENABLED=0
-GOOS=linux
-GOARCH=amd64
-
 # Go 文件
 TARGET=main
 
@@ -13,11 +8,6 @@ all: build
 build:
 	@echo "Building $(TARGET)..."
 	go build -o $(TARGET) $(TARGET).go
-
-# 编译为 Linux 目标
-build-linux:
-	@echo "Building $(TARGET) for $(GOOS)/$(GOARCH)..."
-	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) go build -o $(TARGET) $(TARGET).go
 
 # 清理生成的文件
 clean:

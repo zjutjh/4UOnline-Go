@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Build
+        run: |
+          go install src.techknowlogick.com/xgo@latest
+          xgo -out 4uonline --targets=*/amd64 .
+
+      - name: Archive Output
+        run: |
+          mkdir -p artifacts
+          mv 4uonline* artifacts/
+          cp README.md artifacts/
+          cp config.example.yaml artifacts/config.yaml
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: artifacts/
