@@ -29,14 +29,12 @@ func UpdateQrcode(c *gin.Context) {
 	}
 
 	qrcode, err := qrcodeService.GetQrcodeById(data.ID)
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		apiException.AbortWithException(c, apiException.ResourceNotFound, err)
-		return
-	}
-
 	if err != nil {
-		apiException.AbortWithException(c, apiException.ServerError, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			apiException.AbortWithException(c, apiException.ResourceNotFound, err)
+		} else {
+			apiException.AbortWithException(c, apiException.ServerError, err)
+		}
 		return
 	}
 

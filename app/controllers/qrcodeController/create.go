@@ -9,10 +9,10 @@ import (
 )
 
 type createQrcodeData struct {
-	College      uint   `json:"college" binding:"required"`
+	College      uint   `json:"college"`
 	Department   string `json:"department" binding:"required"`
-	Description  string `json:"description" binding:"required"`
-	FeedbackType uint   `json:"feedback_type" binding:"required"`
+	Description  string `json:"description"`
+	FeedbackType uint   `json:"feedback_type"`
 	Location     string `json:"location" binding:"required"`
 }
 

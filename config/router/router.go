@@ -71,9 +71,9 @@ func Init(r *gin.Engine) {
 			{
 				adminQrcode.PUT("/status", qrcodeController.ToggleStatus)
 				adminQrcode.POST("", qrcodeController.CreateQrcode)
-				adminQrcode.DELETE("", qrcodeController.DeleteQrcode)
+				adminQrcode.DELETE("", midwares.CheckSuperAdmin, qrcodeController.DeleteQrcode)
 				adminQrcode.GET("", qrcodeController.GetQrcode)
-				adminQrcode.GET("/list", qrcodeController.GetList)
+				adminQrcode.POST("/list", qrcodeController.GetList)
 				adminQrcode.PUT("", qrcodeController.UpdateQrcode)
 			}
 		}
