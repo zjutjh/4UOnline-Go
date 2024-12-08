@@ -14,7 +14,7 @@ type deleteQrcodeData struct {
 	ID uint `json:"id"`
 }
 
-// DeleteQrcode 创建一个权益码
+// DeleteQrcode 删除一个权益码
 func DeleteQrcode(c *gin.Context) {
 	var data deleteQrcodeData
 	err := c.ShouldBindJSON(&data)

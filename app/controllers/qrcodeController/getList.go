@@ -10,6 +10,7 @@ import (
 type filter struct {
 	College      []uint `json:"college"`
 	FeedbackType []uint `json:"feedback_type"`
+	Status       bool   `json:"status"`
 }
 
 type getListData struct {
@@ -37,7 +38,9 @@ func GetList(c *gin.Context) {
 	qrcodeListResp := make([]qrcodeResp, 0)
 
 	qrcodeList, total, err := qrcodeService.GetList(
-		filter.College, filter.FeedbackType,
+		filter.College,
+		filter.FeedbackType,
+		filter.Status,
 		data.Keyword, data.Page, data.PageSize)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ParamError, err)

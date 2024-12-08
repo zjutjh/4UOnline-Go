@@ -69,7 +69,6 @@ func Init(r *gin.Engine) {
 
 			adminQrcode := admin.Group("/qrcode", midwares.CheckAdmin)
 			{
-				adminQrcode.PUT("/status", qrcodeController.ToggleStatus)
 				adminQrcode.POST("", qrcodeController.CreateQrcode)
 				adminQrcode.DELETE("", midwares.CheckSuperAdmin, qrcodeController.DeleteQrcode)
 				adminQrcode.GET("", qrcodeController.GetQrcode)
@@ -98,6 +97,11 @@ func Init(r *gin.Engine) {
 		website := api.Group("/website")
 		{
 			website.GET("/list", websiteController.GetWebsiteList)
+		}
+
+		track := api.Group("/track")
+		{
+			track.GET("/qrcode/scan_count", qrcodeController.ScanCount)
 		}
 	}
 }

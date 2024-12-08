@@ -14,12 +14,13 @@ type updateQrcodeData struct {
 	ID           uint   `json:"id" binding:"required"`
 	College      uint   `json:"college" binding:"required"`
 	Department   string `json:"department" binding:"required"`
-	Description  string `json:"description" binding:"required"`
+	Description  string `json:"description"`
 	FeedbackType uint   `json:"feedback_type" binding:"required"`
 	Location     string `json:"location" binding:"required"`
+	Status       bool   `json:"status"`
 }
 
-// UpdateQrcode 更新学院信息
+// UpdateQrcode 更新权益码信息
 func UpdateQrcode(c *gin.Context) {
 	var data updateQrcodeData
 	err := c.ShouldBindJSON(&data)
@@ -44,6 +45,7 @@ func UpdateQrcode(c *gin.Context) {
 		qrcode.Description = data.Description
 		qrcode.FeedbackType = data.FeedbackType
 		qrcode.Location = data.Location
+		qrcode.Status = data.Status
 	}
 
 	err = qrcodeService.SaveQrcode(qrcode)

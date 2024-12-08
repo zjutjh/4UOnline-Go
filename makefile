@@ -13,7 +13,7 @@ check-gcc:
 
 # 构建目标
 build:
-	check-gcc
+	$(check-gcc)
 	@echo "Building $(TARGET)..."
 	go build -v -o $(TARGET) .
 
