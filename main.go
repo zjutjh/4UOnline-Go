@@ -4,6 +4,7 @@ import (
 	"4u-go/app/midwares"
 	"4u-go/app/utils/aes"
 	"4u-go/app/utils/log"
+	"4u-go/app/utils/server"
 	"4u-go/config/config"
 	"4u-go/config/database"
 	"4u-go/config/objectStorage"
@@ -43,8 +44,5 @@ func main() {
 	wechat.Init()
 	router.Init(r)
 
-	err := r.Run(":" + config.Config.GetString("server.port"))
-	if err != nil {
-		zap.L().Fatal(err.Error())
-	}
+	server.Run(r, ":"+config.Config.GetString("server.port"))
 }
