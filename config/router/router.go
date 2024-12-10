@@ -7,6 +7,7 @@ import (
 	"4u-go/app/controllers/collegeController"
 	"4u-go/app/controllers/lostAndFoundController"
 	"4u-go/app/controllers/objectController"
+	"4u-go/app/controllers/qrcodeController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/controllers/websiteController"
 	"4u-go/app/midwares"
@@ -17,7 +18,7 @@ import (
 func Init(r *gin.Engine) {
 	const pre = "/api"
 
-	api := r.Group(pre, midwares.CheckInit)
+	api := r.Group(pre)
 	{
 		user := api.Group("/user")
 		{
@@ -72,6 +73,15 @@ func Init(r *gin.Engine) {
 				adminWebsite.PUT("", websiteController.UpdateWebsite)
 				adminWebsite.GET("/list", websiteController.GetEditableWebsites)
 			}
+
+			adminQrcode := admin.Group("/qrcode", midwares.CheckAdmin)
+			{
+				adminQrcode.POST("", qrcodeController.CreateQrcode)
+				adminQrcode.DELETE("", midwares.CheckSuperAdmin, qrcodeController.DeleteQrcode)
+				adminQrcode.GET("", qrcodeController.GetQrcode)
+				adminQrcode.POST("/list", qrcodeController.GetList)
+				adminQrcode.PUT("", qrcodeController.UpdateQrcode)
+			}
 		}
 
 		activity := api.Group("/activity")
@@ -96,6 +106,7 @@ func Init(r *gin.Engine) {
 			website.GET("/list", websiteController.GetWebsiteList)
 		}
 
+
 		lostAndFound := api.Group("/lost-and-found")
 		{
 			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
@@ -105,6 +116,11 @@ func Init(r *gin.Engine) {
 			lostAndFound.GET("/latest", lostAndFoundController.GetLatestLostAndFound)
 			lostAndFound.GET("/user", midwares.CheckLogin, lostAndFoundController.GetUserLostAndFoundStatus)
 			lostAndFound.PUT("/user", midwares.CheckLogin, lostAndFoundController.UpdateLostAndFoundStatus)
+    }
+    
+		track := api.Group("/track")
+		{
+			track.GET("/qrcode/scan_count", qrcodeController.ScanCount)
 		}
 	}
 }

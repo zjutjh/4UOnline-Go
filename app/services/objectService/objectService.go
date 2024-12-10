@@ -1,12 +1,15 @@
 package objectService
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
-	"strings"
 	"time"
 
+	"github.com/chai2010/webp"
+	"github.com/disintegration/imaging"
 	"github.com/dustin/go-humanize"
 	"github.com/gabriel-vasile/mimetype"
 	uuid "github.com/satori/go.uuid"
@@ -23,15 +26,23 @@ var (
 	ErrNotImage = errors.New("file isn't a image")
 )
 
+const (
+	// TypeImage 图片
+	TypeImage = "image"
+
+	// TypeAttachment 附件
+	TypeAttachment = "attachment"
+)
+
 var uploadTypeLimits = map[string]int64{
-	"public/image":      humanize.MByte * 10,
-	"public/attachment": humanize.MByte * 100,
+	TypeImage:      humanize.MByte * 10,
+	TypeAttachment: humanize.MByte * 100,
 }
 
 // GetFileInfo 获取文件基本信息
 func GetFileInfo(
 	file multipart.File,
-	fileHeader *multipart.FileHeader,
+	fileSize int64,
 	uploadType string,
 ) (
 	contentType string,
@@ -39,7 +50,7 @@ func GetFileInfo(
 	err error,
 ) {
 	// 检查文件大小
-	if err = checkFileSize(uploadType, fileHeader.Size); err != nil {
+	if err = checkFileSize(uploadType, fileSize); err != nil {
 		return "", "", err
 	}
 
@@ -48,12 +59,6 @@ func GetFileInfo(
 	if err != nil {
 		return "", "", err
 	}
-
-	// 检查是否为图像类型
-	if uploadType == "public/image" && !strings.HasPrefix(mimeType, "image") {
-		return "", "", ErrNotImage
-	}
-
 	return mimeType, mimeExt, nil
 }
 
@@ -80,5 +85,24 @@ func getFileTypeAndExt(file multipart.File) (mimeType string, mimeExt string, er
 	if err != nil {
 		return "", "", err
 	}
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		return "", "", err
+	}
 	return mime.String(), mime.Extension(), nil
+}
+
+// ConvertToWebP 将图片转换为 WebP 格式
+func ConvertToWebP(file multipart.File) (io.Reader, int64, error) {
+	img, err := imaging.Decode(file)
+	if err != nil {
+		return nil, 0, fmt.Errorf("%w: %w", ErrNotImage, err)
+	}
+
+	var buf bytes.Buffer
+	err = webp.Encode(&buf, img, &webp.Options{Quality: 100})
+	if err != nil {
+		return nil, 0, err
+	}
+	return bytes.NewReader(buf.Bytes()), int64(buf.Len()), nil
 }

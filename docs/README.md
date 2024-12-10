@@ -33,7 +33,9 @@
 
 ### 如何参与开发
 
-1. 克隆该项目并切换到dev分支，然后切出自己的分支进行开发
+1. 安装`GCC`或`MinGW`并配置好环境（[下载](http://tdm-gcc.tdragon.net/download)）
+
+2. 克隆该项目并切换到`dev`分支，然后切出自己的分支进行开发
 
 ```shell
 git clone https://github.com/zjutjh/4UOnline-Go.git
@@ -58,7 +60,7 @@ git reset --hard origin/dev
 git push --force
 ```
 
-2. 复制示例配置，并按注释要求填写配置文件（`user`配置询问部长团，并要提供个人学号）
+3. 复制示例配置，并按注释要求填写配置文件（`user`配置询问部长团，并要提供个人学号）
 
 ```shell
 /* Linux */
@@ -68,32 +70,16 @@ cp config.example.yaml config.yaml
 copy config.example.yaml config.yaml
 ```
 
-在配置数据库后，向 config 表插入如下两条记录来完成初始化
-
-| key | value |
-|---|---|
-| encryptKey | *16位的整数倍的字符串 |
-| initKey | True |
-
-3. 启动程序
+4. 启动程序
 
 ```shell
 go run main.go
 ```
 
-4. 每次提交 commit 前，先运行以下命令来格式化代码并检查规范（需要安装 [gci](https://github.com/daixiang0/gci) 和 [golangci-lint](https://golangci-lint.run/)）
+5. 每次提交 commit 前，先运行以下命令来格式化代码并检查规范（需要安装 [gci](https://github.com/daixiang0/gci) 和 [golangci-lint](https://golangci-lint.run/)）
 
 ```
 gofmt -w .
 gci write . -s standard -s default
 golangci-lint run --config .golangci.yml
-```
-
-5. 打包后端到服务器运行
-
-```
-SET CGO_ENABLE=0
-SET GOOS=linux
-SET GOARCH=amd64
-go build -o 4u main.go
 ```

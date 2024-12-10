@@ -32,7 +32,7 @@ var (
 	ResourceNotFound      = NewError(200511, log.LevelInfo, "访问的资源不存在")
 	AdminKeyError         = NewError(200512, log.LevelInfo, "管理员注册密钥错误")
 	AdminAlreadyExisted   = NewError(200513, log.LevelInfo, "管理员账号已存在")
-	UploadFileError       = NewError(200514, log.LevelError, "上传文件失败")
+	UploadFileError       = NewError(200514, log.LevelInfo, "上传文件失败")
 	FileSizeExceedError   = NewError(200515, log.LevelInfo, "文件大小超限")
 	FileNotImageError     = NewError(200516, log.LevelInfo, "上传的文件不是图片")
 

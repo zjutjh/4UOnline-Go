@@ -33,7 +33,10 @@ func CreateStudentUser(
 		StudentID: studentID,
 	}
 
-	EncryptUserKeyInfo(user)
+	err = EncryptUserKeyInfo(user)
+	if err != nil {
+		return nil, err
+	}
 	res := database.DB.Create(&user)
 
 	return user, res.Error
