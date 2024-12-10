@@ -6,6 +6,7 @@ import (
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/collegeController"
 	"4u-go/app/controllers/objectController"
+	"4u-go/app/controllers/qrcodeController"
 	"4u-go/app/controllers/userController"
 	"4u-go/app/controllers/websiteController"
 	"4u-go/app/midwares"
@@ -65,6 +66,15 @@ func Init(r *gin.Engine) {
 				adminWebsite.PUT("", websiteController.UpdateWebsite)
 				adminWebsite.GET("/list", websiteController.GetEditableWebsites)
 			}
+
+			adminQrcode := admin.Group("/qrcode", midwares.CheckAdmin)
+			{
+				adminQrcode.POST("", qrcodeController.CreateQrcode)
+				adminQrcode.DELETE("", midwares.CheckSuperAdmin, qrcodeController.DeleteQrcode)
+				adminQrcode.GET("", qrcodeController.GetQrcode)
+				adminQrcode.POST("/list", qrcodeController.GetList)
+				adminQrcode.PUT("", qrcodeController.UpdateQrcode)
+			}
 		}
 
 		activity := api.Group("/activity")
@@ -87,6 +97,11 @@ func Init(r *gin.Engine) {
 		website := api.Group("/website")
 		{
 			website.GET("/list", websiteController.GetWebsiteList)
+		}
+
+		track := api.Group("/track")
+		{
+			track.GET("/qrcode/scan_count", qrcodeController.ScanCount)
 		}
 	}
 }
