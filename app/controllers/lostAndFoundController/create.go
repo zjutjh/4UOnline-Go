@@ -16,7 +16,7 @@ type createLostAndFoundData struct {
 	Kind         uint8    `json:"kind"`                            // 物品种类 1其他2证件3箱包4首饰5现金6电子产品7钥匙
 	Place        string   `json:"place" binding:"required"`        // 丢失或拾得地点
 	Time         string   `json:"time" binding:"required"`         // 丢失或拾得时间
-	Imgs         []string `json:"imgs" binding:"required"`         // 物品图片，多个图片以逗号分隔
+	Imgs         []string `json:"imgs"`                            // 物品图片，多个图片以逗号分隔
 	Contact      string   `json:"contact" binding:"required"`      // 联系方式
 	ContactWay   uint8    `json:"contact_way" binding:"required"`  // 联系方式选项 1-手机号 2-qq 3-微信 4-邮箱
 }
