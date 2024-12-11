@@ -106,7 +106,6 @@ func Init(r *gin.Engine) {
 			website.GET("/list", websiteController.GetWebsiteList)
 		}
 
-
 		lostAndFound := api.Group("/lost-and-found")
 		{
 			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
@@ -116,8 +115,8 @@ func Init(r *gin.Engine) {
 			lostAndFound.GET("/latest", lostAndFoundController.GetLatestLostAndFound)
 			lostAndFound.GET("/user", midwares.CheckLogin, lostAndFoundController.GetUserLostAndFoundStatus)
 			lostAndFound.PUT("/user", midwares.CheckLogin, lostAndFoundController.UpdateLostAndFoundStatus)
-    }
-    
+		}
+
 		track := api.Group("/track")
 		{
 			track.GET("/qrcode/scan_count", qrcodeController.ScanCount)
