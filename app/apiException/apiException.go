@@ -36,9 +36,7 @@ var (
 	FileSizeExceedError   = NewError(200515, log.LevelInfo, "文件大小超限")
 	FileNotImageError     = NewError(200516, log.LevelInfo, "上传的文件不是图片")
 
-	NotInit  = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
 	NotFound = NewError(200404, log.LevelWarn, http.StatusText(http.StatusNotFound))
-	Unknown  = NewError(300500, log.LevelError, "系统异常，请稍后重试!")
 )
 
 // Error 方法实现了 error 接口，返回错误的消息内容

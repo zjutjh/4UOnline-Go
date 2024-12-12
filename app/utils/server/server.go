@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"4u-go/config/redis"
@@ -29,7 +30,7 @@ func Run(handler http.Handler, addr string) {
 
 	// 阻塞并监听结束信号
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
 	zap.L().Info("Shutdown Server...")

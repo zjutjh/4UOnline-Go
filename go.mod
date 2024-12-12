@@ -5,7 +5,6 @@ go 1.22.9
 require (
 	github.com/chai2010/webp v1.1.1
 	github.com/dustin/go-humanize v1.0.1
-	github.com/gabriel-vasile/mimetype v1.4.6
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-contrib/sessions v1.0.1
 	github.com/gin-gonic/gin v1.10.0
@@ -36,6 +35,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.6 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
