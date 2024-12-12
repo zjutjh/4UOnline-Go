@@ -3,6 +3,7 @@ package objectController
 
 import (
 	"errors"
+	"image"
 	"io"
 	"mime/multipart"
 
@@ -59,7 +60,7 @@ func UploadFile(c *gin.Context) {
 	if uploadType == objectService.TypeImage {
 		reader, size, err := objectService.ConvertToWebP(file)
 		if err != nil {
-			if errors.Is(err, objectService.ErrNotImage) {
+			if errors.Is(err, image.ErrFormat) {
 				apiException.AbortWithException(c, apiException.FileNotImageError, err)
 				return
 			}

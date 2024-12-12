@@ -4,15 +4,21 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"image"
+	_ "image/gif" // 注册解码器
+	_ "image/jpeg"
+	_ "image/png"
 	"io"
 	"mime/multipart"
 	"time"
 
 	"github.com/chai2010/webp"
-	"github.com/disintegration/imaging"
 	"github.com/dustin/go-humanize"
 	"github.com/gabriel-vasile/mimetype"
 	uuid "github.com/satori/go.uuid"
+	_ "golang.org/x/image/bmp" // 注册解码器
+	_ "golang.org/x/image/tiff"
+	_ "golang.org/x/image/webp"
 )
 
 var (
@@ -21,9 +27,6 @@ var (
 
 	// ErrSizeExceeded 文件大小超限
 	ErrSizeExceeded = errors.New("file size exceeded")
-
-	// ErrNotImage 使用 image 类型上传非图片的文件
-	ErrNotImage = errors.New("file isn't a image")
 )
 
 const (
@@ -94,9 +97,9 @@ func getFileTypeAndExt(file multipart.File) (mimeType string, mimeExt string, er
 
 // ConvertToWebP 将图片转换为 WebP 格式
 func ConvertToWebP(file multipart.File) (io.Reader, int64, error) {
-	img, err := imaging.Decode(file)
+	img, _, err := image.Decode(file)
 	if err != nil {
-		return nil, 0, fmt.Errorf("%w: %w", ErrNotImage, err)
+		return nil, 0, err
 	}
 
 	var buf bytes.Buffer
