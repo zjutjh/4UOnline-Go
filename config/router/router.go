@@ -28,7 +28,7 @@ func Init(r *gin.Engine) {
 			user.POST("/login", userController.AuthByPassword)
 			user.POST("/login/session", userController.AuthBySession)
 
-			user.POST("/attachment", objectController.UploadFile)
+			user.POST("/upload", objectController.UploadFile)
 
 			user.POST("/repass", midwares.CheckLogin, userController.ChangePassword)
 			user.DELETE("/delete", midwares.CheckLogin, userController.DeleteAccount)
