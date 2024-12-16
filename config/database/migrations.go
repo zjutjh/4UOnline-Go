@@ -13,6 +13,7 @@ func autoMigrate(db *gorm.DB) error {
 		&models.LostAndFoundRecord{},
 		&models.Website{},
 		&models.College{},
+		&models.ContactViewRecord{},
 		&models.Qrcode{},
 		&models.Counter{},
 	)

@@ -5,6 +5,7 @@ import (
 	"4u-go/app/controllers/adminController"
 	"4u-go/app/controllers/announcementController"
 	"4u-go/app/controllers/collegeController"
+	"4u-go/app/controllers/lostAndFoundController"
 	"4u-go/app/controllers/objectController"
 	"4u-go/app/controllers/qrcodeController"
 	"4u-go/app/controllers/userController"
@@ -37,6 +38,12 @@ func Init(r *gin.Engine) {
 		admin := api.Group("/admin")
 		{
 			admin.POST("/create/key", adminController.CreateAdminByKey)
+
+			adminLostAndFound := admin.Group("/lost-and-found", midwares.CheckAdmin)
+			{
+				adminLostAndFound.PUT("", lostAndFoundController.ReviewLostAndFound)
+				adminLostAndFound.PUT("/update", lostAndFoundController.UpdateLostAndFound)
+			}
 
 			adminActivity := admin.Group("/activity", midwares.CheckAdmin)
 			{
@@ -97,6 +104,17 @@ func Init(r *gin.Engine) {
 		website := api.Group("/website")
 		{
 			website.GET("/list", websiteController.GetWebsiteList)
+		}
+
+		lostAndFound := api.Group("/lost-and-found")
+		{
+			lostAndFound.POST("", midwares.CheckLogin, lostAndFoundController.CreateLostAndFound)
+			lostAndFound.DELETE("", midwares.CheckLogin, lostAndFoundController.DeleteLostAndFound)
+			lostAndFound.GET("/list", lostAndFoundController.GetLostAndFoundList)
+			lostAndFound.GET("", midwares.CheckLogin, lostAndFoundController.GetLostAndFoundContact)
+			lostAndFound.GET("/latest", lostAndFoundController.GetLatestLostAndFound)
+			lostAndFound.GET("/user", midwares.CheckLogin, lostAndFoundController.GetUserLostAndFoundStatus)
+			lostAndFound.PUT("/user", midwares.CheckLogin, lostAndFoundController.UpdateLostAndFoundStatus)
 		}
 
 		track := api.Group("/track")
