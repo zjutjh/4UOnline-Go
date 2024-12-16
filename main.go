@@ -1,36 +1,48 @@
 package main
 
 import (
-	"log"
-
 	"4u-go/app/midwares"
+	"4u-go/app/utils/aes"
+	"4u-go/app/utils/log"
+	"4u-go/app/utils/server"
+	"4u-go/config/config"
 	"4u-go/config/database"
+	"4u-go/config/objectStorage"
+	"4u-go/config/redis"
 	"4u-go/config/router"
 	"4u-go/config/session"
 	"4u-go/config/wechat"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func main() {
-	if err := database.Init(); err != nil {
-		log.Fatal(err) // 在 main 函数中处理错误并终止程序
+	// 如果配置文件中开启了调试模式
+	if !config.Config.GetBool("server.debug") {
+		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(midwares.ErrHandler())
 	r.NoMethod(midwares.HandleNotFound)
 	r.NoRoute(midwares.HandleNotFound)
+	log.ZapInit()
+	redis.Init()
+	if err := aes.Init(); err != nil {
+		zap.L().Fatal(err.Error())
+	}
+	if err := database.Init(); err != nil {
+		zap.L().Fatal(err.Error())
+	}
+	if err := objectStorage.Init(); err != nil {
+		zap.L().Fatal(err.Error())
+	}
 	if err := session.Init(r); err != nil {
-		log.Fatal(err)
+		zap.L().Fatal(err.Error())
 	}
-	if err := wechat.Init(); err != nil {
-		log.Fatal(err)
-	}
+	wechat.Init()
 	router.Init(r)
 
-	err := r.Run()
-	if err != nil {
-		log.Fatal("ServerStartFailed", err)
-	}
+	server.Run(r, ":"+config.Config.GetString("server.port"))
 }

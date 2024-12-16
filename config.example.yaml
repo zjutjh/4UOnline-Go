@@ -1,3 +1,7 @@
+server:
+  port: "8080"
+  debug: true
+
 database:
   name: 4u_db
   host: "127.0.0.1"
@@ -7,15 +11,44 @@ database:
 
 session:
   name: 4u-session
-  driver: redis
+  secret: secret
 
 redis:
   host: "127.0.0.1"
   port: 6379
   db: 0
-  user: root
   pass:
 
 wechat: # 微信小程序相关配置 (切记不能泄漏,不能为空）
   appid:
   appsecret:
+
+user:
+  host:
+
+admin:
+  key:   # 管理员密钥
+
+aes:  # AES 密钥，长度必须为 16、24 或 32 字节
+  encryptKey:
+
+minio: # minio 存储配置
+  accessKey:  # 用于身份验证的访问密钥
+  secretKey:  # 用于身份验证的秘密密钥
+  secure: false # 是否使用 HTTPS，false 表示使用 HTTP
+  endPoint: 127.0.0.1:9000 # MinIO 服务的地址和端口
+  bucket: 4uonline # 用于存储对象的桶名称
+  domain: http://127.0.0.1:9000/ # 对外访问的域名
+  tempDir: tmp # 临时对象存放目录名
+
+log:
+  development: true        # 是否开启开发模式 true: 开启 false: 关闭
+  disableStacktrace: false # 是否禁用堆栈跟踪
+  encoding: "json"         # 编码格式 json: json格式 console: 控制台格式
+  level: "info"            # 日志级别 debug: 调试 info: 信息 warn: 警告 error: 错误 dpanic: 严重 panic: 恐慌 fatal: 致命
+  name: "4u"               # 日志名称
+  writers: "console,file"  # 日志输出方式 console: 控制台 file: 文件
+  loggerDir: "./logs"      # 日志目录
+  logMaxSize: 10           # 单个日志文件最大大小 单位: MB
+  logMaxAge: 7             # 日志保留天数
+  logCompress: false       # 是否压缩日志文件

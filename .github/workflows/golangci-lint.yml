@@ -1,0 +1,32 @@
+name: Lint
+
+# 定义触发条件：在 `dev` 分支的 push 或 pull request 事件触发工作流
+on:
+  push:
+    branches:
+      - dev  # 当向 dev 分支推送时触发
+  pull_request:
+    branches:
+      - dev  # 当对 dev 分支发起拉取请求时触发
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest  # 指定工作流运行在最新的 Ubuntu 环境中
+
+    steps:
+      # 第一步：检查出代码
+      - name: Checkout code
+        uses: actions/checkout@v4  # 使用 GitHub 提供的 checkout 动作，确保代码在工作流环境中可用
+
+      # 第二步：设置 Go 环境
+      - name: Set up Go
+        uses: actions/setup-go@v5  # 使用 GitHub 提供的 setup-go 动作，设置 Go 环境
+        with:
+          go-version: stable
+
+      # 第三步：运行 golangci-lint
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6  # 使用 golangci-lint-action
+        with:
+          version: v1.62.0  # 指定 golangci-lint 版本
+          args: '--config .golangci.yml'  # 使用指定的配置文件
