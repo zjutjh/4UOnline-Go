@@ -10,9 +10,11 @@ import (
 	"io"
 	"time"
 
+	"4u-go/config/sdk"
 	"github.com/chai2010/webp"
 	"github.com/dustin/go-humanize"
 	uuid "github.com/satori/go.uuid"
+	"go.uber.org/zap"
 	_ "golang.org/x/image/bmp" // 注册解码器
 	_ "golang.org/x/image/tiff"
 	_ "golang.org/x/image/webp"
@@ -39,4 +41,17 @@ func ConvertToWebP(reader io.Reader) (io.Reader, int64, error) {
 		return nil, 0, err
 	}
 	return bytes.NewReader(buf.Bytes()), int64(buf.Len()), nil
+}
+
+// DeleteObjectByUrlAsync 通过给定的 Url 异步删除对象
+func DeleteObjectByUrlAsync(url string) {
+	objectKey, ok := sdk.MinioService.GetObjectKeyFromUrl(url)
+	if ok {
+		go func(objectKey string) {
+			err := sdk.MinioService.DeleteObject(objectKey)
+			if err != nil {
+				zap.L().Error("Minio 删除对象错误", zap.String("objectKey", objectKey), zap.Error(err))
+			}
+		}(objectKey)
+	}
 }

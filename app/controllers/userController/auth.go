@@ -7,7 +7,7 @@ import (
 	"4u-go/app/services/sessionService"
 	"4u-go/app/services/userService"
 	"4u-go/app/utils"
-	"4u-go/config/wechat"
+	"4u-go/config/sdk"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -91,7 +91,7 @@ func WeChatLogin(c *gin.Context) {
 		return
 	}
 
-	session, err := wechat.MiniProgram.GetAuth().Code2Session(postForm.Code)
+	session, err := sdk.MiniProgram.GetAuth().Code2Session(postForm.Code)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.OpenIDError, err)
 		return

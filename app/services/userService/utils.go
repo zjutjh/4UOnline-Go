@@ -2,13 +2,13 @@ package userService
 
 import (
 	"4u-go/app/models"
-	"4u-go/app/utils/aes"
+	"github.com/zjutjh/WeJH-SDK/aesHelper"
 )
 
 // DecryptUserKeyInfo 解密用户信息
 func DecryptUserKeyInfo(user *models.User) error {
 	if user.PhoneNum != "" {
-		slt, err := aes.Decrypt(user.PhoneNum)
+		slt, err := aesHelper.Decrypt(user.PhoneNum)
 		if err != nil {
 			return err
 		}
@@ -20,7 +20,7 @@ func DecryptUserKeyInfo(user *models.User) error {
 // EncryptUserKeyInfo 加密用户信息
 func EncryptUserKeyInfo(user *models.User) error {
 	if user.PhoneNum != "" {
-		num, err := aes.Encrypt(user.PhoneNum + user.StudentID)
+		num, err := aesHelper.Encrypt(user.PhoneNum + user.StudentID)
 		if err != nil {
 			return err
 		}

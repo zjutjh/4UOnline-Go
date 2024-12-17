@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"4u-go/config/redis"
+	"4u-go/config/sdk"
 	"go.uber.org/zap"
 )
 
@@ -43,7 +43,7 @@ func Run(handler http.Handler, addr string) {
 	}
 
 	// 关闭 Redis 客户端
-	if err := redis.GlobalClient.Close(); err != nil {
+	if err := sdk.RedisClient.Close(); err != nil {
 		zap.L().Error("Redis Client Shutdown Failed", zap.Error(err))
 	}
 

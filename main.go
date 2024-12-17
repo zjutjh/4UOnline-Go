@@ -1,17 +1,14 @@
 package main
 
 import (
+	"log"
+
 	"4u-go/app/midwares"
-	"4u-go/app/utils/aes"
-	"4u-go/app/utils/log"
 	"4u-go/app/utils/server"
 	"4u-go/config/config"
 	"4u-go/config/database"
-	"4u-go/config/objectStorage"
-	"4u-go/config/redis"
 	"4u-go/config/router"
-	"4u-go/config/session"
-	"4u-go/config/wechat"
+	"4u-go/config/sdk"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -27,21 +24,15 @@ func main() {
 	r.Use(midwares.ErrHandler())
 	r.NoMethod(midwares.HandleNotFound)
 	r.NoRoute(midwares.HandleNotFound)
-	log.ZapInit()
-	redis.Init()
-	if err := aes.Init(); err != nil {
-		zap.L().Fatal(err.Error())
+	if err := sdk.ZapInit(); err != nil {
+		log.Fatal(err.Error())
 	}
 	if err := database.Init(); err != nil {
 		zap.L().Fatal(err.Error())
 	}
-	if err := objectStorage.Init(); err != nil {
+	if err := sdk.Init(r); err != nil {
 		zap.L().Fatal(err.Error())
 	}
-	if err := session.Init(r); err != nil {
-		zap.L().Fatal(err.Error())
-	}
-	wechat.Init()
 	router.Init(r)
 
 	server.Run(r, ":"+config.Config.GetString("server.port"))
