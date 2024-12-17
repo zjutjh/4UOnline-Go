@@ -8,6 +8,7 @@ import (
 	"4u-go/app/apiException"
 	"4u-go/app/services/objectService"
 	"4u-go/app/utils"
+	"4u-go/config/sdk"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -56,7 +57,7 @@ func UploadFile(c *gin.Context) {
 
 	// 上传文件
 	objectKey := objectService.GenerateObjectKey("image", ".webp")
-	objectUrl, err := objectService.PutObject(objectKey, reader, size, contentType)
+	objectUrl, err := sdk.MinioService.PutObject(objectKey, reader, size, contentType)
 	if err != nil {
 		apiException.AbortWithException(c, apiException.ServerError, err)
 		return
